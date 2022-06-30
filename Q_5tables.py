@@ -34,7 +34,7 @@ current_pos = start_pos
 game = 0
 
 # input desired win sequence
-win_seq = "ABAAAAA" * 50
+win_seq = "ABAAAAA" * 10
 games = len(win_seq)
 
 # input desired exploration and learning rate
@@ -161,7 +161,6 @@ def pick_act_move(win_scenario):
                         best_reward = poss_reward
         new_position = take_next_move(next_act_action)
         if new_position == current_pos:
-            print("Tried {} but I remain stuck in {} as of move {}".format(next_act_action, current_pos, act_move_counter))
             continue
         else:
             return next_act_action
@@ -178,7 +177,7 @@ def pick_int_move():
         else:
             for a in int_actions:
                 poss_reward = rewards_int[take_next_move(a)]
-                if poss_reward >= best_reward:
+                if poss_reward > best_reward:
                     next_int_action = a
                     best_reward = poss_reward
         new_position = take_next_move(next_int_action)
