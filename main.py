@@ -10,9 +10,23 @@ Open questions so far:
  - why is there always another corner with almost as much reward as the Target?
  # to fix/improve:
  - visualization / formatting with large numbers
+ 
+ Ideas:
+ - random position values to start - slight differences - heuristic (-1 to 1)
+ - Q table with 8 values for each position (not corners)
+    - inside each square is a set of smaller squares
+    - function to prepare results for entire model
+    - best position = draw as a line
+    - xy within xy 
+    - number that changes first should change first conceptually
+    - next: different interim tables for each scenario
+        - interim: can it learn ABCDABAD... repeated
+ 
+ 
 """
 # initialize starting variables
 int_state_flag = True
+into_int_state = True
 int_move_counter = 0
 act_move_counter = 1
 start_pos = (2, 2)
@@ -20,7 +34,7 @@ current_pos = start_pos
 game = 0
 
 # input desired win sequence
-win_seq = "AB" * 100
+win_seq = "ABAAAAA" * 50
 games = len(win_seq)
 
 # input desired exploration and learning rate
@@ -40,7 +54,11 @@ int_step_allowance = 4
 # board initialization and rules
 board_rows = 5
 board_cols = 5
-board = np.zeros([board_rows, board_cols])
+board = {}
+int_board = {}
+for i in range(board_rows):
+    for j in range(board_cols):
+        board[(i, j)] = 0
 
 # set locations of win scenarios and initialize separate reward tables to 0
 win_obj_A = (0, 0)
@@ -123,22 +141,22 @@ def pick_act_move(win_scenario):
             for a in act_actions:
                 if win_scenario == "A":
                     poss_reward = rewards_A[take_next_move(a)]
-                    if poss_reward >= best_reward:
+                    if poss_reward > best_reward:
                         next_act_action = a
                         best_reward = poss_reward
                 elif win_scenario == "B":
                     poss_reward = rewards_B[take_next_move(a)]
-                    if poss_reward >= best_reward:
+                    if poss_reward > best_reward:
                         next_act_action = a
                         best_reward = poss_reward
                 elif win_scenario == "C":
                     poss_reward = rewards_C[take_next_move(a)]
-                    if poss_reward >= best_reward:
+                    if poss_reward > best_reward:
                         next_act_action = a
                         best_reward = poss_reward
                 else:
                     poss_reward = rewards_D[take_next_move(a)]
-                    if poss_reward >= best_reward:
+                    if poss_reward > best_reward:
                         next_act_action = a
                         best_reward = poss_reward
         new_position = take_next_move(next_act_action)
@@ -169,9 +187,28 @@ def pick_int_move():
         return next_int_action
 
 
+def show_int_board():
+    for i in range(board_rows):
+        for j in range(board_cols):
+            int_board[(i, j)] = "o"
+    for a in int_board:
+        for z in int_reward_positions:
+            if a == z:
+                int_board[a] = "!!"
+    for i in range(0, board_rows):
+        print('--------------------------')
+        out = '| '
+        for j in range(0, board_cols):
+            out += str(int_board[(i, j)]).ljust(2) + ' | '
+        print(out)
+    print('--------------------------')
+
+
 # checks if the interim state is done yet
-def check_int_done():
-    if int_move_counter >= int_step_allowance:
+def check_to_int():
+    if int_move_counter == int_step_allowance:
+        show_int_board()
+    if int_move_counter < int_step_allowance and into_int_state:
         return True
     return False
 
@@ -205,14 +242,16 @@ End of initialization & functions
 while game < games:
     scenario = win_seq[game]
     win_pos = set_win_pos(scenario)
-    int_state_done = check_int_done()
-    if not int_state_done:  # if still in interim state
+    go_to_int = check_to_int()
+    if go_to_int:  # if still in interim state
         int_action = pick_int_move()  # gives "Up"
         print("Game: {}  New pos: {}  Next action: {}  State: interim".format(game + 1, current_pos, int_action))
         current_pos = take_next_move(int_action)  # changes position
         int_reward_positions.append(current_pos)  # add interim position to list to be rewarded
         int_move_counter += 1
     else:  # if goal reached, reward specific reward table (+ int table) and reset
+        into_int_state = False
+        int_move_counter = 0
         if current_pos == win_pos:
             reward = base_reward - (act_move_counter * act_step_cost)
             if scenario == "A":
@@ -249,10 +288,10 @@ while game < games:
             # show_values("C")
             # show_values("D")
             game += 1
-            int_move_counter = 0
             act_move_counter = 0
             reward_positions = []
             int_reward_positions = []
+            into_int_state = True
         else:  # take another move in action state
             act_action = pick_act_move(scenario)
             print("Game: {}  Target: {}  New pos: {}  Next action: {}  Move #: {}".format(game + 1, win_pos, current_pos, act_action, act_move_counter + 1))
@@ -261,3 +300,4 @@ while game < games:
             act_move_counter += 1
 
 show_values("int")
+
