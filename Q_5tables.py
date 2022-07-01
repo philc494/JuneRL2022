@@ -203,10 +203,12 @@ def show_int_board():
     print('--------------------------')
 
 
+show_int_board()
+
 # checks if the interim state is done yet
 def check_to_int():
-    if int_move_counter == int_step_allowance:
-        show_int_board()
+    # if int_move_counter == int_step_allowance:
+        # show_int_board()
     if int_move_counter < int_step_allowance and into_int_state:
         return True
     return False
@@ -244,7 +246,7 @@ while game < games:
     go_to_int = check_to_int()
     if go_to_int:  # if still in interim state
         int_action = pick_int_move()  # gives "Up"
-        print("Game: {}  New pos: {}  Next action: {}  State: interim".format(game + 1, current_pos, int_action))
+        # print("Game: {}  New pos: {}  Next action: {}  State: interim".format(game + 1, current_pos, int_action))
         current_pos = take_next_move(int_action)  # changes position
         int_reward_positions.append(current_pos)  # add interim position to list to be rewarded
         int_move_counter += 1
@@ -281,9 +283,9 @@ while game < games:
                 for s in set(reversed(int_reward_positions)):
                     end_reward = rewards_int[s] + learn_rate * (reward - rewards_int[s])
                     rewards_int[s] = round(end_reward, 2)
-            print("Game {} of {} completed:  Act moves in last game: {}".format(game + 1, games, act_move_counter))
-            show_values("A")
-            show_values("B")
+            # print("Game {} of {} completed:  Act moves in last game: {}".format(game + 1, games, act_move_counter))
+            # show_values("A")
+            # show_values("B")
             # show_values("C")
             # show_values("D")
             game += 1
@@ -293,10 +295,10 @@ while game < games:
             into_int_state = True
         else:  # take another move in action state
             act_action = pick_act_move(scenario)
-            print("Game: {}  Target: {}  New pos: {}  Next action: {}  Move #: {}".format(game + 1, win_pos, current_pos, act_action, act_move_counter + 1))
+            # print("Game: {}  Target: {}  New pos: {}  Next action: {}  Move #: {}".format(game + 1, win_pos, current_pos, act_action, act_move_counter + 1))
             current_pos = take_next_move(act_action)
             reward_positions.append(take_next_move(act_action))
             act_move_counter += 1
 
-show_values("int")
+# show_values("int")
 
