@@ -2,10 +2,16 @@ import numpy as np
 import random
 import collections.abc
 
+"""
+Open questions:
+- Resetting the position after each game?
+- 
+"""
+
 # input desired paramters
-win_seq = "A" * 10
-base_reward = 5
-act_step_cost = .1 * base_reward
+win_seq = "A" * 1
+base_reward = 50
+act_step_cost = 5
 int_step_allowance = 4
 exp_rate = 0.2
 learn_rate = 0.3
@@ -20,6 +26,7 @@ game = 0
 start_pos = (2, 2)
 current_pos = start_pos
 pos_act_rewards = {}
+mini_dic = {}
 
 # allowed actions by state
 act_actions = [
@@ -74,7 +81,11 @@ rewards_int_A = {}
 rewards_int_B = {}
 rewards_int_C = {}
 rewards_int_D = {}
-inner_table = {}
+
+inner_table_intA = {}
+inner_table_intB = {}
+inner_table_intC = {}
+inner_table_intD = {}
 
 rewards_positions = {}
 rewards_positions_int = {}
@@ -91,29 +102,23 @@ for i in range(board_rows):
         rewards_int_D[(i, j)] = 0
         rewards_positions[(i, j)] = []
 
-for i in range(-1, 2):
-    for j in range(-1, 2):
-        inner_table[i, j] = 0
-
 for i in rewards_A:
-    rewards_A[i] = inner_table
-for i in rewards_B:
-    rewards_B[i] = inner_table
-for i in rewards_C:
-    rewards_C[i] = inner_table
-for i in rewards_D:
-    rewards_D[i] = inner_table
+    rewards_A[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+                   (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+    rewards_B[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+                   (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+    rewards_C[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+                   (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+    rewards_D[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+                   (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+
 for i in rewards_int_A:
-    rewards_int_A[i] = inner_table
-for i in rewards_int_B:
-    rewards_int_B[i] = inner_table
-for i in rewards_int_C:
-    rewards_int_C[i] = inner_table
-for i in rewards_int_D:
-    rewards_int_D[i] = inner_table
+    rewards_int_A[i] = inner_table_intA
+    rewards_int_B[i] = inner_table_intB
+    rewards_int_C[i] = inner_table_intC
+    rewards_int_D[i] = inner_table_intD
 
 
-# takes a letter for the win scenario and returns the win position
 def set_win_pos(letter):
     if letter == "A":
         winning_pos = win_obj_A
@@ -132,8 +137,6 @@ def check_to_int():
     return False
 
 
-# takes a direction and returns a new position (or current pos if move is
-# illegal)
 def take_next_move(action):
     if action == "up":
         next_pos = (current_pos[0] - 1, current_pos[1])
@@ -159,11 +162,8 @@ def take_next_move(action):
     return current_pos
 
 
-# choose move to enact either randomly or using best available next move
 def pick_act_move(win_scenario):
     while True:
-        # prevent choosing last action in list by default every time in
-        # beginning
         random.shuffle(act_actions)
         next_act_action = ""
         if np.random.uniform(0, 1) <= exp_rate:
@@ -177,21 +177,23 @@ def pick_act_move(win_scenario):
                     if poss_reward > best_reward:
                         next_act_action = a
                         best_reward = poss_reward
-                # elif win_scenario == "B":
-                #     poss_reward = rewards_B[take_next_move(a)]
-                #     if poss_reward > best_reward:
-                #         next_act_action = a
-                #         best_reward = poss_reward
-                # elif win_scenario == "C":
-                #     poss_reward = rewards_C[take_next_move(a)]
-                #     if poss_reward > best_reward:
-                #         next_act_action = a
-                #         best_reward = poss_reward
-                # else:
-                #     poss_reward = rewards_D[take_next_move(a)]
-                #     if poss_reward > best_reward:
-                #         next_act_action = a
-                #         best_reward = poss_reward
+                elif win_scenario == "B":
+                    poss_reward = rewards_B[take_next_move(a)][act_action_trans[a]]
+                    if poss_reward > best_reward:
+                        next_act_action = a
+                        best_reward = poss_reward
+                elif win_scenario == "C":
+                    poss_reward = rewards_C[take_next_move(
+                        a)][act_action_trans[a]]
+                    if poss_reward > best_reward:
+                        next_act_action = a
+                        best_reward = poss_reward
+                else:
+                    poss_reward = rewards_D[take_next_move(
+                        a)][act_action_trans[a]]
+                    if poss_reward > best_reward:
+                        next_act_action = a
+                        best_reward = poss_reward
         new_position = take_next_move(next_act_action)
         if new_position == current_pos:
             continue
@@ -207,65 +209,46 @@ def dict_update(d, update):
             d[k] = v
     return d
 
-
-def update_rewards(rwd_actpos_dic, scenario_rwd_dic, reward_apply):
-    for a in all_positions:
-        for b in all_actions:
-            if a in rwd_actpos_dic:
-                if b in rwd_actpos_dic[a]:
-                    c = scenario_rwd_dic[a][b] + learn_rate * (reward_apply - scenario_rwd_dic[a][b])
-                    scenario_rwd_dic[a][b] = round(c, 2)
-
-board_values = {}
+  # for pos, actions in rwd_actpos_dic.items():
+  #       for key in actions:
 
 
-# def show_pos_act_values():
-#     for i in range(3):
-#         for j in range(3):
-#             board_values[(i, j)] = "o"
-#     for i in range(0, 3):
-#         print('-----------------')
-#         out = '| '
-#         for j in range(0, 3):
-#             out += str(board_values[(i, j)]).ljust(2) + ' | '
-#             print(out)
-#
-# print(board_values)
-            # todo: draw the 9-grid table
+def update_rewards(rwd_actpos_dic, reward_apply):
+    if scenario == "A":
+        for a in rwd_actpos_dic:
+            for b in rwd_actpos_dic[a]:
+                rewards_A[a][b] = round(rewards_A[a][b] + learn_rate * (reward_apply - rewards_A[a][b]), 2)
+    if scenario == "B":
+        for a in rwd_actpos_dic:
+            for b in rwd_actpos_dic[a]:
+                rewards_B[a][b] = round(rewards_B[a][b] + learn_rate * (reward_apply - rewards_B[a][b]), 2)
+    if scenario == "C":
+        for a in rwd_actpos_dic:
+            for b in rwd_actpos_dic[a]:
+                rewards_C[a][b] = round(rewards_C[a][b] + learn_rate * (reward_apply - rewards_C[a][b]), 2)
+    else:
+        for a in rwd_actpos_dic:
+            for b in rwd_actpos_dic[a]:
+                rewards_D[a][b] = round(rewards_D[a][b] + learn_rate * (reward_apply - rewards_D[a][b]), 2)
 
 
-def show_board_values():
-    for i in range(3):
-        for j in range(3):
-            board_values[(i, j)] = "o"
-    for i in range(0, 3):
-        print(' ----------------')
-        out = ' | '
-        for j in range(0, 3):
-            out += str(board_values[(i, j)]).ljust(2) + ' | '
-        print(out)
-    print(' ----------------')
-
-abc = {}
-
-
-def minisquare_values(reward_dic, board_pos):
-    print(' ------Pos{} ------'.format(board_pos))
+def minisquare_values(reward_dic, board_pos, z):
+    print(' {}--- Pos{} ---{}'.format(z, board_pos, z))
     for i in range(-1, 2):
         for j in range(-1, 2):
             if board_pos in reward_dic:
                 if (i, j) in reward_dic[board_pos]:
-                    abc[(i, j)] = round((reward_dic[board_pos][(i, j)]), 1)
+                    mini_dic[(i, j)] = round((reward_dic[board_pos][(i, j)]), 1)
             else:
-                abc[(i, j)] = 0
+                mini_dic[(i, j)] = 0
     for i in range(-1, 2):
-        print(' ----------------------')
+        print(' ----------------')
         out = ' | '
         for j in range(-1, 2):
-            if (i, j) in abc:
-                out += str(abc[(i, j)]).ljust(2) + ' | '
+            if (i, j) in mini_dic:
+                out += str(mini_dic[(i, j)]).ljust(2) + ' | '
         print(out)
-    print(' ----------------------')
+    print(' {}--- Pos{} ---{}'.format(z, board_pos, z))
 
 
 while game < games:
@@ -273,43 +256,35 @@ while game < games:
     win_pos = set_win_pos(scenario)
     if current_pos == win_pos:
         reward = base_reward - (act_move_counter * act_step_cost)
-        update_rewards(pos_act_rewards, rewards_A, reward)  # make function so it picks rewards_A/B in the function
-        # if scenario == "A":
-        #     for a in pos_act_rewards:
-        #         print(a)
-        #         end_reward = a[b] + learn_rate * (reward - a[b])
-        #         rewards_A[a][b] = round(end_reward, 2)
-        # print(
-        #     "Game {} of {} completed:  Act moves in last game: {}".format(
-        #         game + 1,
-        #         games,
-        #         act_move_counter))
+        update_rewards(pos_act_rewards, reward)
+        print(rewards_A)
+        print(rewards_B)
+        print(
+            "Game {} of {} completed:  Act moves in last game: {}".format(
+                game + 1,
+                games,
+                act_move_counter - 1))
         game += 1
         act_move_counter = 0
-        # print(rewards_A)
-        # todo: visualization of results to see if it works
-        # todo: update action picking function for A
+        temp_dict = {}
+        pos_act_rewards = {}
         # todo: all resets necessary; write a function
     else:  # take another move in action state
         act_action = pick_act_move(scenario)
-        # print("Game: {}  Move #: {}  Current pos: {}  Action: {}  Target: {}".format(
-        #     game + 1, act_move_counter, current_pos, act_action, win_pos))
+        print("Game: {}  Move #: {}  Current pos: {}  Action: {}  Target: {}".format(
+            game + 1, act_move_counter, current_pos, act_action, win_pos))
         act_action_coord = act_action_trans[act_action]  # translate action into action coordinates
         temp_dict = {current_pos: {act_action_coord: 0}}
         dict_update(pos_act_rewards, temp_dict)
         current_pos = take_next_move(act_action)
         act_move_counter += 1
 
-print(start_pos)
-print(pos_act_rewards)
-minisquare_values(rewards_A, start_pos)
 
+# minisquare_values(rewards_A, (0, 1), "A")
+minisquare_values(rewards_A, (0, 2), "A")
+minisquare_values(rewards_A, (2, 2), "A")
 
+# todo: problem: it has values for illegal actions
 
-    # rewards_positions[current_pos] = {act_action_coord: 0}
-
-    # go_to_int = check_to_int()
-    # if go_to_int:
-    #     int_action = pick_int_move()
-# show_values()  # todo: funciton to show values based on tables used
 # todo: include entire interim state calculation and steps
+
