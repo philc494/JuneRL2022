@@ -9,7 +9,7 @@ Open questions:
 """
 
 # input desired paramters
-win_seq = "A" * 1
+win_seq = "A" * 5
 base_reward = 50
 act_step_cost = 5
 int_step_allowance = 4
@@ -27,6 +27,7 @@ start_pos = (2, 2)
 current_pos = start_pos
 pos_act_rewards = {}
 mini_dic = {}
+board = {}
 
 # allowed actions by state
 act_actions = [
@@ -232,23 +233,56 @@ def update_rewards(rwd_actpos_dic, reward_apply):
                 rewards_D[a][b] = round(rewards_D[a][b] + learn_rate * (reward_apply - rewards_D[a][b]), 2)
 
 
-def minisquare_values(reward_dic, board_pos, z):
-    print(' {}--- Pos{} ---{}'.format(z, board_pos, z))
+def minisquare_values(reward_dic, board_pos):
+    def show_board_squares():
+        for i in range(board_rows):
+            for j in range(board_cols):
+                board[(i, j)] = "o"
+        for a in board:
+            if a == board_pos:
+                board[a] = "XX"
+        for i in range(0, board_rows):
+            print(' --------------------------')
+            out = ' | '
+            for j in range(0, board_cols):
+                out += str(board[(i, j)]).ljust(2) + ' | '
+            print(out)
+        print(' --------------------------')
+    show_board_squares()
+    if reward_dic == rewards_A:
+        z = "A"
+        print("check1")
+    elif reward_dic == rewards_B:
+        z = "B"
+        print("check2")
+    elif reward_dic == rewards_C:
+        z = "C"
+        print("check3")
+    elif reward_dic == rewards_D:
+        z = "D"
+        print("check4")
+    else:
+        z = "Z"
+        print("check5")
+    print(' {}--------------- Pos{} ---------------{}'.format(z, board_pos, z))
     for i in range(-1, 2):
         for j in range(-1, 2):
-            if board_pos in reward_dic:
-                if (i, j) in reward_dic[board_pos]:
-                    mini_dic[(i, j)] = round((reward_dic[board_pos][(i, j)]), 1)
-            else:
-                mini_dic[(i, j)] = 0
+            mini_dic[(i, j)] = round((reward_dic[board_pos][(i, j)]), 1)
     for i in range(-1, 2):
-        print(' ----------------')
+        print(' -------------------------------------------')
         out = ' | '
         for j in range(-1, 2):
-            if (i, j) in mini_dic:
-                out += str(mini_dic[(i, j)]).ljust(2) + ' | '
+            out += str(float(mini_dic[(i, j)])).center(6) + '    |    '
         print(out)
-    print(' {}--- Pos{} ---{}'.format(z, board_pos, z))
+    print(' {}--------------- Pos{} ---------------{}\n\n'.format(z, board_pos, z))
+
+
+def game_reset():
+    global game, act_move_counter, temp_dict, pos_act_rewards
+    game += 1
+    act_move_counter = 0
+    temp_dict = {}
+    pos_act_rewards = {}
 
 
 while game < games:
@@ -257,18 +291,12 @@ while game < games:
     if current_pos == win_pos:
         reward = base_reward - (act_move_counter * act_step_cost)
         update_rewards(pos_act_rewards, reward)
-        print(rewards_A)
-        print(rewards_B)
         print(
             "Game {} of {} completed:  Act moves in last game: {}".format(
                 game + 1,
                 games,
                 act_move_counter - 1))
-        game += 1
-        act_move_counter = 0
-        temp_dict = {}
-        pos_act_rewards = {}
-        # todo: all resets necessary; write a function
+        game_reset()
     else:  # take another move in action state
         act_action = pick_act_move(scenario)
         print("Game: {}  Move #: {}  Current pos: {}  Action: {}  Target: {}".format(
@@ -280,11 +308,9 @@ while game < games:
         act_move_counter += 1
 
 
-# minisquare_values(rewards_A, (0, 1), "A")
-minisquare_values(rewards_A, (0, 2), "A")
-minisquare_values(rewards_A, (2, 2), "A")
-
-# todo: problem: it has values for illegal actions
+minisquare_values(rewards_A, (0, 1))
+minisquare_values(rewards_A, (1, 0))
+minisquare_values(rewards_D, (1, 0))
 
 # todo: include entire interim state calculation and steps
 
