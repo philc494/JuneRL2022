@@ -9,7 +9,7 @@ Open questions:
 """
 
 # input desired paramters
-win_seq = "A" * 5
+win_seq = "AB" * 5
 base_reward = 50
 act_step_cost = 5
 int_step_allowance = 4
@@ -83,14 +83,6 @@ rewards_int_B = {}
 rewards_int_C = {}
 rewards_int_D = {}
 
-inner_table_intA = {}
-inner_table_intB = {}
-inner_table_intC = {}
-inner_table_intD = {}
-
-rewards_positions = {}
-rewards_positions_int = {}
-
 for i in range(board_rows):
     for j in range(board_cols):
         rewards_A[(i, j)] = 0
@@ -101,7 +93,7 @@ for i in range(board_rows):
         rewards_int_B[(i, j)] = 0
         rewards_int_C[(i, j)] = 0
         rewards_int_D[(i, j)] = 0
-        rewards_positions[(i, j)] = []
+
 
 for i in rewards_A:
     rewards_A[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
@@ -112,12 +104,14 @@ for i in rewards_A:
                    (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
     rewards_D[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                    (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-
-for i in rewards_int_A:
-    rewards_int_A[i] = inner_table_intA
-    rewards_int_B[i] = inner_table_intB
-    rewards_int_C[i] = inner_table_intC
-    rewards_int_D[i] = inner_table_intD
+    rewards_int_A[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+                   (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+    rewards_int_B[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+                   (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+    rewards_int_C[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+                   (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+    rewards_int_D[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+                   (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
 
 
 def set_win_pos(letter):
@@ -288,6 +282,9 @@ def game_reset():
 while game < games:
     scenario = win_seq[game]
     win_pos = set_win_pos(scenario)
+    go_to_int = check_to_int()
+    if go_to_int:
+        int_action = pick_int_move(scenario)
     if current_pos == win_pos:
         reward = base_reward - (act_move_counter * act_step_cost)
         update_rewards(pos_act_rewards, reward)
