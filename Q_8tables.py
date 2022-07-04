@@ -1,6 +1,8 @@
 import numpy as np
 import random
 import collections.abc
+import seaborn as sb
+import matplotlib.pyplot as plt
 
 """
 Open questions:
@@ -13,7 +15,7 @@ Next steps:
 
 # input desired paramters
 win_pattern = "ABCD"
-iterations = 100
+iterations = 10
 win_seq = win_pattern * iterations
 base_reward = 50
 act_step_cost = 1
@@ -37,8 +39,8 @@ if(input(" *****************Training settings*****************\n "
             " Randomly selected win pattern: {}\n Iterations: {}\n Press enter to continue—".format(
                 V,
                 iterations))
-    else:
-        rand_flag = False
+else:
+    rand_flag = False
 
 # initialize starting variables
 int_state_flag = True
@@ -360,6 +362,8 @@ def minisquare_values(reward_dic, board_pos):
             out += str(float(mini_dic[(i, j)])).center(6) + '    |    '
         print(out)
     print(' {}------------- Pos{} -------------{}\n\n'.format(z, board_pos, z))
+    return mini_dic
+    # todo: convert tuples for a minidic into a grid of values in a dataframe
 
 
 def game_reset():
@@ -411,16 +415,24 @@ while game < games:
 
 if rand_flag:
     print(" Random sequence used: {}".format(V))
-print(" Iterations: {}".format(iterations))
+    print(" Iterations: {}".format(iterations))
+else:
+    print(" Sequence used: {}".format(win_pattern))
+    print(" Iterations: {}".format(iterations))
 
 # minisquare_values(rewards_int_A, (0, 1))
 # minisquare_values(rewards_int_A, (1, 0))
 # minisquare_values(rewards_int_A, (1, 1))
-minisquare_values(rewards_A, (4, 4))
+zz = minisquare_values(rewards_A, (4, 4))
 
-minisquare_values(rewards_int_A, (4, 4))
+# minisquare_values(rewards_int_A, (4, 4))
 # minisquare_values(rewards_int_A, (0, 0))
 # minisquare_values(rewards_int_A, (0, 0))
 # minisquare_values(rewards_int_B, (2, 2))
 # minisquare_values(rewards_int_B, (0, 4))
 
+print(zz)
+
+
+
+# sns.heatmap(zz)
