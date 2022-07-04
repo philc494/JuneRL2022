@@ -37,6 +37,8 @@ if(input(" *****************Training settings*****************\n "
             " Randomly selected win pattern: {}\n Iterations: {}\n Press enter to continue—".format(
                 V,
                 iterations))
+    else:
+        rand_flag = False
 
 # initialize starting variables
 int_state_flag = True
@@ -51,6 +53,7 @@ pos_act_rewards = {}
 pos_int_rewards = {}
 mini_dic = {}
 board = {}
+
 
 # allowed actions by state
 act_actions = [
