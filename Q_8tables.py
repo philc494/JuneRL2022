@@ -7,18 +7,19 @@ import matplotlib.pyplot as plt
 """
 Open questions:
 - Resetting the position after each game?
-- 
+- Gathering stats before moving to deep learning? (# of interim stays, time to finish X runs, etc.) or not until later?
 
 Next steps:
 - visualization / graphics
+- DeepQ
 """
 
 # input desired paramters
-win_pattern = "ABCD"
-iterations = 10
+win_pattern = "A"
+iterations = 10000
 win_seq = win_pattern * iterations
 base_reward = 50
-act_step_cost = 1
+act_step_cost = 5
 int_step_allowance = 4
 exp_rate = 0.2
 learn_rate = 0.3
@@ -105,11 +106,11 @@ rewards_A = {}
 rewards_B = {}
 rewards_C = {}
 rewards_D = {}
-
 rewards_int_A = {}
 rewards_int_B = {}
 rewards_int_C = {}
 rewards_int_D = {}
+blank = {}
 
 for i in range(board_rows):
     for j in range(board_cols):
@@ -121,6 +122,7 @@ for i in range(board_rows):
         rewards_int_B[(i, j)] = 0
         rewards_int_C[(i, j)] = 0
         rewards_int_D[(i, j)] = 0
+        blank[(i, j)] = 0
 
 for i in rewards_A:
     rewards_A[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
@@ -138,6 +140,8 @@ for i in rewards_A:
     rewards_int_C[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                         (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
     rewards_int_D[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+                        (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+    blank[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                         (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
 
 
@@ -335,7 +339,9 @@ def minisquare_values(reward_dic, board_pos):
             print(out)
         print(' --------------------------')
     show_board_squares()
-    if reward_dic == rewards_A:
+    if reward_dic == blank:
+        z = "N/A"
+    elif reward_dic == rewards_A:
         z = "AAA"
     elif reward_dic == rewards_B:
         z = "BBB"
@@ -386,6 +392,7 @@ while game < games:
         # print("Game: {}  Current pos: {}  Next action: {}  State: interim".format(game + 1, current_pos, int_action))
         int_action_coord = int_action_trans[int_action]
         temp_dict_int = {current_pos: {int_action_coord: 0}}
+        # print("Adding current position {}  with action {} to dic".format(current_pos, int_action_coord))
         dict_update(pos_int_rewards, temp_dict_int)
         current_pos = take_next_move(int_action)
         int_move_counter += 1
@@ -396,16 +403,16 @@ while game < games:
             reward = base_reward - (act_move_counter * act_step_cost)
             update_act_rewards(pos_act_rewards, reward)
             update_int_rewards(pos_int_rewards, reward)
-            print(
-                "Game {} of {} completed:  Act moves in last game: {}".format(
+            if (game+1) % (games/20) == 0:
+                print("Game {} of {} completed:  Act moves in last game: {}".format(
                     game + 1,
                     games,
                     act_move_counter))
             game_reset()
         else:  # take another move in action state
             act_action = pick_act_move(scenario)
-            print("Game: {}  Move #: {}  Current pos: {}  Action: {}  Target: {}".format(
-                game + 1, act_move_counter, current_pos, act_action, win_pos))
+            # print("Game: {}  Move #: {}  Current pos: {}  Action: {}  Target: {}".format(
+            #     game + 1, act_move_counter, current_pos, act_action, win_pos))
             # translate action into action coordinates
             act_action_coord = act_action_trans[act_action]
             temp_dict_act = {current_pos: {act_action_coord: 0}}
@@ -420,19 +427,23 @@ else:
     print(" Sequence used: {}".format(win_pattern))
     print(" Iterations: {}".format(iterations))
 
+#
+# minisquare_values(rewards_A, (1, 1))
+# minisquare_values(rewards_A, (0, 1))
+# minisquare_values(rewards_A, (1, 0))
+# minisquare_values(rewards_A, (0, 0))
+#
+# minisquare_values(rewards_int_A, (1, 1))
 # minisquare_values(rewards_int_A, (0, 1))
 # minisquare_values(rewards_int_A, (1, 0))
-# minisquare_values(rewards_int_A, (1, 1))
-zz = minisquare_values(rewards_A, (4, 4))
-
-# minisquare_values(rewards_int_A, (4, 4))
 # minisquare_values(rewards_int_A, (0, 0))
-# minisquare_values(rewards_int_A, (0, 0))
-# minisquare_values(rewards_int_B, (2, 2))
-# minisquare_values(rewards_int_B, (0, 4))
 
-print(zz)
-
-
+minisquare_values(rewards_int_A, (2, 2))
+minisquare_values(rewards_int_B, (0, 4))
+minisquare_values(rewards_int_B, (2, 2))
+minisquare_values(rewards_int_C, (4, 0))
+minisquare_values(rewards_int_C, (2, 2))
+minisquare_values(rewards_int_D, (4, 4))
+minisquare_values(rewards_int_D, (2, 2))
 
 # sns.heatmap(zz)
