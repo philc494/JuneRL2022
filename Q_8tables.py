@@ -5,19 +5,25 @@ import seaborn as sb
 import matplotlib.pyplot as plt
 
 """
-Open questions:
-- Resetting the position after each game?
+Open questions/discuss:
+- learning rate addition - extreme improvement, check
+- "int rewards A" -- unexpected; maybe because it gets to target early, then bounces around until Action?
 - Gathering stats before moving to deep learning? (# of interim stays, time to finish X runs, etc.) or not until later?
+- discount factor vs. step cost?
+- Resetting the position after each game?
 
 Next steps:
 - visualization / graphics
-- DeepQ
+- DQN
 """
+
+# todo: interim states fully 0 on their win position
 
 # input desired paramters
 win_pattern = "A"
-iterations = 10000
+iterations = 25000
 win_seq = win_pattern * iterations
+games = len(win_seq)
 base_reward = 50
 act_step_cost = 5
 int_step_allowance = 4
@@ -25,9 +31,9 @@ exp_rate = 0.2
 learn_rate = 0.3
 
 if(input(" *****************Training settings*****************\n "
-         "Win sequence: '{}'\n Iterations: {} \n Base reward: {}  Cost per step: {}\n "
+         "Win sequence: '{}'\n Iterations: {} \n Total games: {}\n Base reward: {}  Cost per step: {}\n "
          "Exploration rate: {}\n Learning rate: {}\n Type 'random' for random sequence instead, "
-         "otherwise press enter to continue— ".format(win_pattern, iterations, base_reward,
+         "otherwise press enter to continue— ".format(win_pattern, iterations, games, base_reward,
           act_step_cost, exp_rate, learn_rate))) == "random":
     rand_flag = True
     randletter = int(input(" What length of random repeating sequence? "))
@@ -36,10 +42,11 @@ if(input(" *****************Training settings*****************\n "
         V = ''.join(win_pattern)
         iterations = int(input(" How many iterations? "))
         win_seq = V * iterations
+        games = len(win_seq)
         input(
-            " Randomly selected win pattern: {}\n Iterations: {}\n Press enter to continue—".format(
+            " Randomly selected win pattern: {}\n Iterations: {}\n Total games: {}\n Press enter to continue—".format(
                 V,
-                iterations))
+                iterations, games))
 else:
     rand_flag = False
 
@@ -48,7 +55,6 @@ int_state_flag = True
 into_int_state = True
 int_move_counter = 0
 act_move_counter = 1
-games = len(win_seq)
 game = 0
 start_pos = (2, 2)
 current_pos = start_pos
@@ -145,6 +151,8 @@ for i in rewards_A:
                         (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
 
 
+
+
 def set_win_pos(letter):
     if letter == "A":
         winning_pos = win_obj_A
@@ -157,10 +165,7 @@ def set_win_pos(letter):
     return winning_pos
 
 
-def check_to_int():
-    if int_move_counter < int_step_allowance and into_int_state:
-        return True
-    return False
+
 
 
 def take_next_move(action):
@@ -282,22 +287,22 @@ def update_act_rewards(rwd_actpos_dic, reward_apply):
         for a in rwd_actpos_dic:
             for b in rwd_actpos_dic[a]:
                 rewards_A[a][b] = round(
-                    rewards_A[a][b] + learn_rate * (reward_apply - rewards_A[a][b]), 2)
+                    (1 - learn_rate) * rewards_A[a][b] + learn_rate * (reward_apply - rewards_A[a][b]), 2)
     elif scenario == "B":
         for a in rwd_actpos_dic:
             for b in rwd_actpos_dic[a]:
                 rewards_B[a][b] = round(
-                    rewards_B[a][b] + learn_rate * (reward_apply - rewards_B[a][b]), 2)
+                    (1 - learn_rate) * rewards_B[a][b] + learn_rate * (reward_apply - rewards_B[a][b]), 2)
     elif scenario == "C":
         for a in rwd_actpos_dic:
             for b in rwd_actpos_dic[a]:
                 rewards_C[a][b] = round(
-                    rewards_C[a][b] + learn_rate * (reward_apply - rewards_C[a][b]), 2)
+                    (1 - learn_rate) * rewards_C[a][b] + learn_rate * (reward_apply - rewards_C[a][b]), 2)
     else:
         for a in rwd_actpos_dic:
             for b in rwd_actpos_dic[a]:
                 rewards_D[a][b] = round(
-                    rewards_D[a][b] + learn_rate * (reward_apply - rewards_D[a][b]), 2)
+                    (1 - learn_rate) * rewards_D[a][b] + learn_rate * (reward_apply - rewards_D[a][b]), 2)
 
 
 def update_int_rewards(rwd_intpos_dic, reward_apply):
@@ -305,22 +310,39 @@ def update_int_rewards(rwd_intpos_dic, reward_apply):
         for a in rwd_intpos_dic:
             for b in rwd_intpos_dic[a]:
                 rewards_int_A[a][b] = round(
-                    rewards_int_A[a][b] + learn_rate * (reward_apply - rewards_int_A[a][b]), 2)
+                    (1 - learn_rate) * rewards_int_A[a][b] + learn_rate * (reward_apply - rewards_int_A[a][b]), 2)
     elif scenario == "B":
         for a in rwd_intpos_dic:
             for b in rwd_intpos_dic[a]:
                 rewards_int_B[a][b] = round(
-                    rewards_int_B[a][b] + learn_rate * (reward_apply - rewards_int_B[a][b]), 2)
+                    (1 - learn_rate) * rewards_int_B[a][b] + learn_rate * (reward_apply - rewards_int_B[a][b]), 2)
     elif scenario == "C":
         for a in rwd_intpos_dic:
             for b in rwd_intpos_dic[a]:
                 rewards_int_C[a][b] = round(
-                    rewards_int_C[a][b] + learn_rate * (reward_apply - rewards_int_C[a][b]), 2)
+                    (1 - learn_rate) * rewards_int_C[a][b] + learn_rate * (reward_apply - rewards_int_C[a][b]), 2)
     else:
         for a in rwd_intpos_dic:
             for b in rwd_intpos_dic[a]:
                 rewards_int_D[a][b] = round(
-                    rewards_int_D[a][b] + learn_rate * (reward_apply - rewards_int_D[a][b]), 2)
+                    (1 - learn_rate) * rewards_int_D[a][b] + learn_rate * (reward_apply - rewards_int_D[a][b]), 2)
+
+
+def check_to_int():
+    if int_move_counter < int_step_allowance and into_int_state:
+        return True
+    return False
+
+
+def game_reset():
+    global game, act_move_counter, temp_dict_act, temp_dict_int, pos_act_rewards, pos_int_rewards, into_int_state
+    game += 1
+    act_move_counter = 0
+    temp_dict_act = {}
+    temp_dict_int = {}
+    pos_act_rewards = {}
+    pos_int_rewards = {}
+    into_int_state = True
 
 
 def minisquare_values(reward_dic, board_pos):
@@ -369,18 +391,6 @@ def minisquare_values(reward_dic, board_pos):
         print(out)
     print(' {}------------- Pos{} -------------{}\n\n'.format(z, board_pos, z))
     return mini_dic
-    # todo: convert tuples for a minidic into a grid of values in a dataframe
-
-
-def game_reset():
-    global game, act_move_counter, temp_dict_act, temp_dict_int, pos_act_rewards, pos_int_rewards, into_int_state
-    game += 1
-    act_move_counter = 0
-    temp_dict_act = {}
-    temp_dict_int = {}
-    pos_act_rewards = {}
-    pos_int_rewards = {}
-    into_int_state = True
 
 
 while game < games:
@@ -403,7 +413,7 @@ while game < games:
             reward = base_reward - (act_move_counter * act_step_cost)
             update_act_rewards(pos_act_rewards, reward)
             update_int_rewards(pos_int_rewards, reward)
-            if (game+1) % (games/20) == 0:
+            if (game+1) % (games/10) == 0:
                 print("Game {} of {} completed:  Act moves in last game: {}".format(
                     game + 1,
                     games,
@@ -411,9 +421,6 @@ while game < games:
             game_reset()
         else:  # take another move in action state
             act_action = pick_act_move(scenario)
-            # print("Game: {}  Move #: {}  Current pos: {}  Action: {}  Target: {}".format(
-            #     game + 1, act_move_counter, current_pos, act_action, win_pos))
-            # translate action into action coordinates
             act_action_coord = act_action_trans[act_action]
             temp_dict_act = {current_pos: {act_action_coord: 0}}
             dict_update(pos_act_rewards, temp_dict_act)
@@ -427,23 +434,21 @@ else:
     print(" Sequence used: {}".format(win_pattern))
     print(" Iterations: {}".format(iterations))
 
-#
-# minisquare_values(rewards_A, (1, 1))
-# minisquare_values(rewards_A, (0, 1))
-# minisquare_values(rewards_A, (1, 0))
-# minisquare_values(rewards_A, (0, 0))
-#
-# minisquare_values(rewards_int_A, (1, 1))
-# minisquare_values(rewards_int_A, (0, 1))
-# minisquare_values(rewards_int_A, (1, 0))
-# minisquare_values(rewards_int_A, (0, 0))
 
+minisquare_values(rewards_A, (1, 1))
+minisquare_values(rewards_A, (0, 1))
+minisquare_values(rewards_A, (1, 0))
+minisquare_values(rewards_A, (0, 0))
+
+minisquare_values(rewards_int_A, (0, 0))
 minisquare_values(rewards_int_A, (2, 2))
-minisquare_values(rewards_int_B, (0, 4))
-minisquare_values(rewards_int_B, (2, 2))
-minisquare_values(rewards_int_C, (4, 0))
-minisquare_values(rewards_int_C, (2, 2))
+minisquare_values(rewards_int_A, (4, 4))
+# minisquare_values(rewards_int_B, (0, 4))
+# minisquare_values(rewards_int_B, (2, 2))
+# minisquare_values(rewards_int_C, (4, 0))
+# minisquare_values(rewards_int_C, (2, 2))
 minisquare_values(rewards_int_D, (4, 4))
 minisquare_values(rewards_int_D, (2, 2))
+minisquare_values(rewards_int_D, (0, 0))
 
-# sns.heatmap(zz)
+
