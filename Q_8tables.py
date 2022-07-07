@@ -19,8 +19,9 @@ Next steps:
 
 
 # input desired paramters
+poss_scenarios = 'ABCD'
 win_pattern = "AB"
-iterations = 25000
+iterations = 2500
 win_seq = win_pattern * iterations
 games = len(win_seq)
 base_reward = 10
@@ -37,7 +38,7 @@ if(input(" *****************Training settings*****************\n "
     rand_flag = True
     randletter = int(input(" What length of random repeating sequence? "))
     if 0 < randletter:
-        win_pattern = random.choices(win_pattern, k=randletter)
+        win_pattern = random.choices(poss_scenarios, k=randletter)
         V = ''.join(win_pattern)
         iterations = int(input(" How many iterations? "))
         win_seq = V * iterations
@@ -383,7 +384,7 @@ def minisquare_values(reward_dic, board_pos):
         for j in range(-1, 2):
             mini_dic[(i, j)] = round((reward_dic[board_pos][(i, j)]), 1)
     for i in range(-1, 2):
-        print(' -------------------------------------------')
+        print(' -----------------------------------------')
         out = ' | '
         for j in range(-1, 2):
             out += str(float(mini_dic[(i, j)])).center(6) + '    |    '
@@ -434,23 +435,25 @@ else:
     print(" Iterations: {}".format(iterations))
 
 
-# minisquare_values(rewards_A, (1, 1))
-# minisquare_values(rewards_A, (0, 1))
-# minisquare_values(rewards_A, (1, 0))
-# minisquare_values(rewards_A, (0, 0))
-#
+minisquare_values(rewards_A, (1, 1))
+minisquare_values(rewards_A, (0, 1))
+minisquare_values(rewards_A, (1, 0))
+minisquare_values(rewards_A, (0, 0))
+
 # minisquare_values(rewards_B, (1, 3))
 # minisquare_values(rewards_B, (1, 4))
 # minisquare_values(rewards_B, (0, 3))
 # minisquare_values(rewards_B, (0, 4))
-#
-#
+
 minisquare_values(rewards_int_A, (0, 0))
 minisquare_values(rewards_int_A, (2, 2))
+
 minisquare_values(rewards_int_B, (0, 4))
 minisquare_values(rewards_int_B, (2, 2))
+
 # minisquare_values(rewards_int_C, (4, 0))
 # minisquare_values(rewards_int_C, (2, 2))
+
 # minisquare_values(rewards_int_D, (4, 4))
 # minisquare_values(rewards_int_D, (2, 2))
 # minisquare_values(rewards_int_D, (0, 0))
