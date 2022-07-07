@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 """
 Open questions/discuss:
-- learning rate addition - extreme improvement, check
-- "int rewards A" -- unexpected; maybe because it gets to target early, then bounces around until Action?
+- learning rate addition
+- "int rewards A" -- stay is not always the highest, because it bounces around 4 moves?
 - Gathering stats before moving to deep learning? (# of interim stays, time to finish X runs, etc.) or not until later?
 - discount factor vs. step cost?
 - Resetting the position after each game?
@@ -17,16 +17,15 @@ Next steps:
 - DQN
 """
 
-# todo: interim states fully 0 on their win position
 
 # input desired paramters
-win_pattern = "A"
+win_pattern = "AB"
 iterations = 25000
 win_seq = win_pattern * iterations
 games = len(win_seq)
-base_reward = 50
-act_step_cost = 5
-int_step_allowance = 4
+base_reward = 10
+act_step_cost = 0.5
+int_step_allowance = 5
 exp_rate = 0.2
 learn_rate = 0.3
 
@@ -151,8 +150,6 @@ for i in rewards_A:
                         (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
 
 
-
-
 def set_win_pos(letter):
     if letter == "A":
         winning_pos = win_obj_A
@@ -163,9 +160,6 @@ def set_win_pos(letter):
     else:
         winning_pos = win_obj_D
     return winning_pos
-
-
-
 
 
 def take_next_move(action):
@@ -248,13 +242,13 @@ def pick_int_move(win_scenario):
                     if poss_reward > best_reward:
                         next_int_action = a
                         best_reward = poss_reward
-                if win_scenario == "B":
+                elif win_scenario == "B":
                     poss_reward = rewards_int_B[take_next_move(
                         a)][int_action_trans[a]]
                     if poss_reward > best_reward:
                         next_int_action = a
                         best_reward = poss_reward
-                if win_scenario == "C":
+                elif win_scenario == "C":
                     poss_reward = rewards_int_C[take_next_move(
                         a)][int_action_trans[a]]
                     if poss_reward > best_reward:
@@ -307,10 +301,15 @@ def update_act_rewards(rwd_actpos_dic, reward_apply):
 
 def update_int_rewards(rwd_intpos_dic, reward_apply):
     if scenario == "A":
+        # print(reward_apply)
         for a in rwd_intpos_dic:
+            # print(rwd_intpos_dic)
+            # print(rwd_intpos_dic[a])
             for b in rwd_intpos_dic[a]:
                 rewards_int_A[a][b] = round(
                     (1 - learn_rate) * rewards_int_A[a][b] + learn_rate * (reward_apply - rewards_int_A[a][b]), 2)
+        # print(rwd_intpos_dic)
+        # print(rwd_intpos_dic[a])
     elif scenario == "B":
         for a in rwd_intpos_dic:
             for b in rwd_intpos_dic[a]:
@@ -435,20 +434,25 @@ else:
     print(" Iterations: {}".format(iterations))
 
 
-minisquare_values(rewards_A, (1, 1))
-minisquare_values(rewards_A, (0, 1))
-minisquare_values(rewards_A, (1, 0))
-minisquare_values(rewards_A, (0, 0))
-
+# minisquare_values(rewards_A, (1, 1))
+# minisquare_values(rewards_A, (0, 1))
+# minisquare_values(rewards_A, (1, 0))
+# minisquare_values(rewards_A, (0, 0))
+#
+# minisquare_values(rewards_B, (1, 3))
+# minisquare_values(rewards_B, (1, 4))
+# minisquare_values(rewards_B, (0, 3))
+# minisquare_values(rewards_B, (0, 4))
+#
+#
 minisquare_values(rewards_int_A, (0, 0))
 minisquare_values(rewards_int_A, (2, 2))
-minisquare_values(rewards_int_A, (4, 4))
-# minisquare_values(rewards_int_B, (0, 4))
-# minisquare_values(rewards_int_B, (2, 2))
+minisquare_values(rewards_int_B, (0, 4))
+minisquare_values(rewards_int_B, (2, 2))
 # minisquare_values(rewards_int_C, (4, 0))
 # minisquare_values(rewards_int_C, (2, 2))
-minisquare_values(rewards_int_D, (4, 4))
-minisquare_values(rewards_int_D, (2, 2))
-minisquare_values(rewards_int_D, (0, 0))
+# minisquare_values(rewards_int_D, (4, 4))
+# minisquare_values(rewards_int_D, (2, 2))
+# minisquare_values(rewards_int_D, (0, 0))
 
-
+print(rewards_int_A)
