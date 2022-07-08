@@ -1,34 +1,24 @@
+"""
+Notes:
+
+"""
 import numpy as np
 import random
 import collections.abc
 import seaborn as sb
 import matplotlib.pyplot as plt
 
-"""
-Open questions/discuss:
-- learning rate addition
-- "int rewards A" -- stay is not always the highest, because it bounces around 4 moves?
-- Gathering stats before moving to deep learning? (# of interim stays, time to finish X runs, etc.) or not until later?
-- discount factor vs. step cost?
-- Resetting the position after each game?
-
-Next steps:
-- visualization / graphics
-- DQN
-"""
-
-
 # input desired paramters
 poss_scenarios = 'ABCD'
-win_pattern = "AB"
-iterations = 2500
+win_pattern = "A"
+iterations = 10000
 win_seq = win_pattern * iterations
 games = len(win_seq)
 base_reward = 10
-act_step_cost = 0.5
-int_step_allowance = 5
+act_step_cost = 0
+int_step_allowance = 4
 exp_rate = 0.2
-learn_rate = 0.3
+learn_rate = 0.5
 
 if(input(" *****************Training settings*****************\n "
          "Win sequence: '{}'\n Iterations: {} \n Total games: {}\n Base reward: {}  Cost per step: {}\n "
@@ -51,9 +41,8 @@ else:
     rand_flag = False
 
 # initialize starting variables
-int_state_flag = True
-into_int_state = True
-int_move_counter = 0
+into_int_state = False
+int_move_counter = int_step_allowance
 act_move_counter = 1
 game = 0
 start_pos = (2, 2)
@@ -62,7 +51,6 @@ pos_act_rewards = {}
 pos_int_rewards = {}
 mini_dic = {}
 board = {}
-
 
 # allowed actions by state
 act_actions = [
@@ -90,13 +78,6 @@ act_action_trans = {"up": (-1, 0), "down": (1, 0), "left": (0, -1), "right": (
 int_action_trans = {"up": (-1, 0), "down": (1, 0), "left": (0, -1), "right": (
     0, 1), "uleft": (-1, -1), "uright": (-1, 1), "dleft": (1, -1), "dright": (1, 1), "stay": (0, 0)}
 
-all_positions = []
-for a in np.arange(0, 5):
-    for b in np.arange(0, 5):
-        all_positions.append((a, b))
-
-all_actions = [(-1, 0), (1, 0), (0, -1), (0, 1),
-               (-1, -1), (-1, 1), (1, -1), (1, 1), (0, 0)]
 
 # board initialization and rules
 board_rows = 5
@@ -107,7 +88,6 @@ win_obj_A = (0, 0)
 win_obj_B = (0, 4)
 win_obj_C = (4, 0)
 win_obj_D = (4, 4)
-
 rewards_A = {}
 rewards_B = {}
 rewards_C = {}
@@ -188,7 +168,7 @@ def take_next_move(action):
     return current_pos
 
 
-def pick_act_move(win_scenario):
+def pick_act_move(win_target):
     while True:
         random.shuffle(act_actions)
         next_act_action = ""
@@ -197,19 +177,19 @@ def pick_act_move(win_scenario):
         else:
             best_reward = -1000000
             for a in act_actions:
-                if win_scenario == "A":
+                if win_target == "A":
                     poss_reward = rewards_A[take_next_move(
                         a)][act_action_trans[a]]
                     if poss_reward > best_reward:
                         next_act_action = a
                         best_reward = poss_reward
-                elif win_scenario == "B":
+                elif win_target == "B":
                     poss_reward = rewards_B[take_next_move(
                         a)][act_action_trans[a]]
                     if poss_reward > best_reward:
                         next_act_action = a
                         best_reward = poss_reward
-                elif win_scenario == "C":
+                elif win_target == "C":
                     poss_reward = rewards_C[take_next_move(
                         a)][act_action_trans[a]]
                     if poss_reward > best_reward:
@@ -228,7 +208,7 @@ def pick_act_move(win_scenario):
             return next_act_action
 
 
-def pick_int_move(win_scenario):
+def pick_int_move(prev_target):
     while True:
         random.shuffle(act_actions)
         next_int_action = ""
@@ -237,19 +217,19 @@ def pick_int_move(win_scenario):
         else:
             best_reward = -1000000
             for a in int_actions:
-                if win_scenario == "A":
+                if prev_target == "A":
                     poss_reward = rewards_int_A[take_next_move(
                         a)][int_action_trans[a]]
                     if poss_reward > best_reward:
                         next_int_action = a
                         best_reward = poss_reward
-                elif win_scenario == "B":
+                elif prev_target == "B":
                     poss_reward = rewards_int_B[take_next_move(
                         a)][int_action_trans[a]]
                     if poss_reward > best_reward:
                         next_int_action = a
                         best_reward = poss_reward
-                elif win_scenario == "C":
+                elif prev_target == "C":
                     poss_reward = rewards_int_C[take_next_move(
                         a)][int_action_trans[a]]
                     if poss_reward > best_reward:
@@ -282,50 +262,48 @@ def update_act_rewards(rwd_actpos_dic, reward_apply):
         for a in rwd_actpos_dic:
             for b in rwd_actpos_dic[a]:
                 rewards_A[a][b] = round(
-                    (1 - learn_rate) * rewards_A[a][b] + learn_rate * (reward_apply - rewards_A[a][b]), 2)
+                    (1-learn_rate) * rewards_A[a][b] + learn_rate * (reward_apply - rewards_A[a][b]), 2)
     elif scenario == "B":
         for a in rwd_actpos_dic:
             for b in rwd_actpos_dic[a]:
                 rewards_B[a][b] = round(
-                    (1 - learn_rate) * rewards_B[a][b] + learn_rate * (reward_apply - rewards_B[a][b]), 2)
+                    rewards_B[a][b] + learn_rate * (reward_apply - rewards_B[a][b]), 2)
     elif scenario == "C":
         for a in rwd_actpos_dic:
             for b in rwd_actpos_dic[a]:
                 rewards_C[a][b] = round(
-                    (1 - learn_rate) * rewards_C[a][b] + learn_rate * (reward_apply - rewards_C[a][b]), 2)
+                    rewards_C[a][b] + learn_rate * (reward_apply - rewards_C[a][b]), 2)
     else:
         for a in rwd_actpos_dic:
             for b in rwd_actpos_dic[a]:
                 rewards_D[a][b] = round(
-                    (1 - learn_rate) * rewards_D[a][b] + learn_rate * (reward_apply - rewards_D[a][b]), 2)
+                    rewards_D[a][b] + learn_rate * (reward_apply - rewards_D[a][b]), 2)
 
 
 def update_int_rewards(rwd_intpos_dic, reward_apply):
-    if scenario == "A":
-        # print(reward_apply)
+    if game == 0:
+        return
+    elif prev_scenario == "A":
+        # print("the game is {} and the previous scenario to be rewarded is {} before resetting".format(game, prev_scenario))
         for a in rwd_intpos_dic:
-            # print(rwd_intpos_dic)
-            # print(rwd_intpos_dic[a])
             for b in rwd_intpos_dic[a]:
                 rewards_int_A[a][b] = round(
-                    (1 - learn_rate) * rewards_int_A[a][b] + learn_rate * (reward_apply - rewards_int_A[a][b]), 2)
-        # print(rwd_intpos_dic)
-        # print(rwd_intpos_dic[a])
-    elif scenario == "B":
+                    rewards_int_A[a][b] + learn_rate * (reward_apply - rewards_int_A[a][b]), 2)
+    elif prev_scenario == "B":
         for a in rwd_intpos_dic:
             for b in rwd_intpos_dic[a]:
                 rewards_int_B[a][b] = round(
-                    (1 - learn_rate) * rewards_int_B[a][b] + learn_rate * (reward_apply - rewards_int_B[a][b]), 2)
-    elif scenario == "C":
+                    rewards_int_B[a][b] + learn_rate * (reward_apply - rewards_int_B[a][b]), 2)
+    elif prev_scenario == "C":
         for a in rwd_intpos_dic:
             for b in rwd_intpos_dic[a]:
                 rewards_int_C[a][b] = round(
-                    (1 - learn_rate) * rewards_int_C[a][b] + learn_rate * (reward_apply - rewards_int_C[a][b]), 2)
+                    rewards_int_C[a][b] + learn_rate * (reward_apply - rewards_int_C[a][b]), 2)
     else:
         for a in rwd_intpos_dic:
             for b in rwd_intpos_dic[a]:
                 rewards_int_D[a][b] = round(
-                    (1 - learn_rate) * rewards_int_D[a][b] + learn_rate * (reward_apply - rewards_int_D[a][b]), 2)
+                    rewards_int_D[a][b] + learn_rate * (reward_apply - rewards_int_D[a][b]), 2)
 
 
 def check_to_int():
@@ -395,10 +373,12 @@ def minisquare_values(reward_dic, board_pos):
 
 while game < games:
     scenario = win_seq[game]
+    # print("this is game number {} and the current scenario is {}".format(game, scenario))
     win_pos = set_win_pos(scenario)
     go_to_int = check_to_int()
     if go_to_int:
-        int_action = pick_int_move(scenario)
+        # print("this is game number {} and the previous scenario for me is {} and current is {}".format(game, prev_scenario, scenario))
+        int_action = pick_int_move(prev_scenario)
         # print("Game: {}  Current pos: {}  Next action: {}  State: interim".format(game + 1, current_pos, int_action))
         int_action_coord = int_action_trans[int_action]
         temp_dict_int = {current_pos: {int_action_coord: 0}}
@@ -411,6 +391,7 @@ while game < games:
         int_move_counter = 0
         if current_pos == win_pos:
             reward = base_reward - (act_move_counter * act_step_cost)
+            # print(pos_act_rewards)
             update_act_rewards(pos_act_rewards, reward)
             update_int_rewards(pos_int_rewards, reward)
             if (game+1) % (games/10) == 0:
@@ -419,6 +400,7 @@ while game < games:
                     games,
                     act_move_counter))
             game_reset()
+            prev_scenario = scenario
         else:  # take another move in action state
             act_action = pick_act_move(scenario)
             act_action_coord = act_action_trans[act_action]
@@ -435,27 +417,102 @@ else:
     print(" Iterations: {}".format(iterations))
 
 
-minisquare_values(rewards_A, (1, 1))
-minisquare_values(rewards_A, (0, 1))
-minisquare_values(rewards_A, (1, 0))
-minisquare_values(rewards_A, (0, 0))
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Collecting data on trials
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+AA_dic00 = minisquare_values(rewards_A, (0, 0))
+AA_dic01 = minisquare_values(rewards_A, (0, 1))
+AA_dic02 = minisquare_values(rewards_A, (0, 2))
+AA_dic03 = minisquare_values(rewards_A, (0, 3))
+AA_dic04 = minisquare_values(rewards_A, (0, 4))
 
-# minisquare_values(rewards_B, (1, 3))
-# minisquare_values(rewards_B, (1, 4))
-# minisquare_values(rewards_B, (0, 3))
-# minisquare_values(rewards_B, (0, 4))
+AA_dic10 = minisquare_values(rewards_A, (1, 0))
+AA_dic11 = minisquare_values(rewards_A, (1, 1))
+AA_dic12 = minisquare_values(rewards_A, (1, 2))
+AA_dic13 = minisquare_values(rewards_A, (1, 3))
+AA_dic14 = minisquare_values(rewards_A, (1, 4))
+
+AA_dic20 = minisquare_values(rewards_A, (2, 0))
+AA_dic21 = minisquare_values(rewards_A, (2, 1))
+AA_dic22 = minisquare_values(rewards_A, (2, 2))
+AA_dic23 = minisquare_values(rewards_A, (2, 3))
+AA_dic24 = minisquare_values(rewards_A, (2, 4))
+
+AA_dic30 = minisquare_values(rewards_A, (3, 0))
+AA_dic31 = minisquare_values(rewards_A, (3, 1))
+AA_dic32 = minisquare_values(rewards_A, (3, 2))
+AA_dic33 = minisquare_values(rewards_A, (3, 3))
+AA_dic34 = minisquare_values(rewards_A, (3, 4))
+
+AA_dic40 = minisquare_values(rewards_A, (4, 0))
+AA_dic41 = minisquare_values(rewards_A, (4, 1))
+AA_dic42 = minisquare_values(rewards_A, (4, 2))
+AA_dic43 = minisquare_values(rewards_A, (4, 3))
+AA_dic44 = minisquare_values(rewards_A, (4, 4))
+
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Visualizations
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+# print(minisquare_values(rewards_A, (0, 0)))
+# print(minisquare_values(rewards_A, (0, 1)))
+# print(minisquare_values(rewards_A, (0, 2)))
+# print(minisquare_values(rewards_A, (0, 3)))
+# print(minisquare_values(rewards_A, (0, 4)))
+#
+# print(minisquare_values(rewards_A, (1, 0)))
+# print(minisquare_values(rewards_A, (1, 1)))
+# print(minisquare_values(rewards_A, (1, 2)))
+# print(minisquare_values(rewards_A, (1, 3)))
+# print(minisquare_values(rewards_A, (1, 4)))
+#
+# print(minisquare_values(rewards_A, (2, 0)))
+# print(minisquare_values(rewards_A, (2, 1)))
+# print(minisquare_values(rewards_A, (2, 2)))
+# print(minisquare_values(rewards_A, (2, 3)))
+# print(minisquare_values(rewards_A, (2, 4)))
+#
+# print(minisquare_values(rewards_A, (3, 0)))
+# print(minisquare_values(rewards_A, (3, 1)))
+# print(minisquare_values(rewards_A, (3, 2)))
+# print(minisquare_values(rewards_A, (3, 3)))
+# print(minisquare_values(rewards_A, (3, 4)))
+#
+# print(minisquare_values(rewards_A, (4, 0)))
+# print(minisquare_values(rewards_A, (4, 1)))
+# print(minisquare_values(rewards_A, (4, 2)))
+# print(minisquare_values(rewards_A, (4, 3)))
+# print(minisquare_values(rewards_A, (4, 4)))
+
+minisquare_values(rewards_A, (1, 3))
+minisquare_values(rewards_A, (1, 4))
+minisquare_values(rewards_A, (0, 3))
+minisquare_values(rewards_A, (0, 4))
+
+minisquare_values(rewards_A, (1, 3))
+minisquare_values(rewards_A, (1, 4))
+minisquare_values(rewards_A, (0, 3))
+minisquare_values(rewards_A, (0, 4))
 
 minisquare_values(rewards_int_A, (0, 0))
 minisquare_values(rewards_int_A, (2, 2))
-
-minisquare_values(rewards_int_B, (0, 4))
-minisquare_values(rewards_int_B, (2, 2))
-
+minisquare_values(rewards_int_A, (0, 1))
+minisquare_values(rewards_int_A, (1, 0))
+#
+# minisquare_values(rewards_int_B, (0, 4))
+# minisquare_values(rewards_int_B, (2, 2))
+# minisquare_values(rewards_int_B, (0, 3))
+# minisquare_values(rewards_int_B, (1, 4))
+#
 # minisquare_values(rewards_int_C, (4, 0))
 # minisquare_values(rewards_int_C, (2, 2))
+# minisquare_values(rewards_int_C, (3, 0))
+# minisquare_values(rewards_int_C, (4, 1))
 
-# minisquare_values(rewards_int_D, (4, 4))
-# minisquare_values(rewards_int_D, (2, 2))
-# minisquare_values(rewards_int_D, (0, 0))
-
-print(rewards_int_A)
+# minisquare_values(rewards_post_D, (4, 4))
+# minisquare_values(rewards_post_D, (2, 2))
+# minisquare_values(rewards_post_D, (0, 0))
+#
