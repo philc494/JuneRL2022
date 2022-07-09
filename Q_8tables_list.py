@@ -2,18 +2,22 @@ import numpy as np
 import pandas as pd
 import random
 import collections.abc
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 poss_scenarios = 'ABCD'
 win_pattern = "ABCD"
-iterations = 50
+iterations = 25000
 win_seq = win_pattern * iterations
 games = len(win_seq)
 base_reward = 10
 act_step_cost = .5
 int_step_allowance = 4
 exp_rate = 0.2
-alpha = 0.1  # learning rate
-gamma = 0.8  # discount factor
+alpha = 0.2  # learning rate
+gamma = 0.8  # discount factor # todo: incorporate
+
+# todo: visualization - set the center square of action state equal to lowest value in grid
 
 if(input(" *****************Training settings*****************\n "
          "Win sequence: '{}'\n Iterations: {} \n Total games: {}\n Base reward: {}  Cost per step: {}\n "
@@ -57,10 +61,10 @@ rewards_A = {}
 rewards_B = {}
 rewards_C = {}
 rewards_D = {}
-rewards_int_A = {}
-rewards_int_B = {}
-rewards_int_C = {}
-rewards_int_D = {}
+rewards_A_int = {}
+rewards_B_int = {}
+rewards_C_int = {}
+rewards_D_int = {}
 blank = {}
 for i in range(board_rows):
     for j in range(board_cols):
@@ -68,10 +72,10 @@ for i in range(board_rows):
         rewards_B[(i, j)] = 0
         rewards_C[(i, j)] = 0
         rewards_D[(i, j)] = 0
-        rewards_int_A[(i, j)] = 0
-        rewards_int_B[(i, j)] = 0
-        rewards_int_C[(i, j)] = 0
-        rewards_int_D[(i, j)] = 0
+        rewards_A_int[(i, j)] = 0
+        rewards_B_int[(i, j)] = 0
+        rewards_C_int[(i, j)] = 0
+        rewards_D_int[(i, j)] = 0
         blank[(i, j)] = 0
 for i in rewards_A:
     rewards_A[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
@@ -82,13 +86,13 @@ for i in rewards_A:
                     (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
     rewards_D[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                     (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-    rewards_int_A[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+    rewards_A_int[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                         (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-    rewards_int_B[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+    rewards_B_int[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                         (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-    rewards_int_C[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+    rewards_C_int[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                         (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-    rewards_int_D[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
+    rewards_D_int[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                         (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
     blank[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                         (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
@@ -204,25 +208,25 @@ def pick_int_move(prev_target):
             best_reward = -1000000
             for a in int_actions:
                 if prev_target == "A":
-                    poss_reward = rewards_int_A[take_next_move(
+                    poss_reward = rewards_A_int[take_next_move(
                         a)][int_action_trans[a]]
                     if poss_reward > best_reward:
                         next_int_action = a
                         best_reward = poss_reward
                 elif prev_target == "B":
-                    poss_reward = rewards_int_B[take_next_move(
+                    poss_reward = rewards_B_int[take_next_move(
                         a)][int_action_trans[a]]
                     if poss_reward > best_reward:
                         next_int_action = a
                         best_reward = poss_reward
                 elif prev_target == "C":
-                    poss_reward = rewards_int_C[take_next_move(
+                    poss_reward = rewards_C_int[take_next_move(
                         a)][int_action_trans[a]]
                     if poss_reward > best_reward:
                         next_int_action = a
                         best_reward = poss_reward
                 else:
-                    poss_reward = rewards_int_D[take_next_move(
+                    poss_reward = rewards_D_int[take_next_move(
                         a)][int_action_trans[a]]
                     if poss_reward > best_reward:
                         next_int_action = a
@@ -283,17 +287,17 @@ def update_int_rewards(reward_apply):
     reversed_int_list = unique(list(reversed(int_action_list)))
     for a, b in reversed_int_list:
         if prev_scenario == "A":
-            rewards_int_A[a][b] = round(
-                rewards_int_A[a][b] + alpha * (reward_apply - rewards_int_A[a][b]), 2)
+            rewards_A_int[a][b] = round(
+                rewards_A_int[a][b] + alpha * (reward_apply - rewards_A_int[a][b]), 2)
         elif prev_scenario == "B":
-            rewards_int_B[a][b] = round(
-                rewards_int_B[a][b] + alpha * (reward_apply - rewards_int_B[a][b]), 2)
+            rewards_B_int[a][b] = round(
+                rewards_B_int[a][b] + alpha * (reward_apply - rewards_B_int[a][b]), 2)
         elif prev_scenario == "C":
-            rewards_int_C[a][b] = round(
-                rewards_int_C[a][b] + alpha * (reward_apply - rewards_int_C[a][b]), 2)
+            rewards_C_int[a][b] = round(
+                rewards_C_int[a][b] + alpha * (reward_apply - rewards_C_int[a][b]), 2)
         else:
-            rewards_int_D[a][b] = round(
-                rewards_int_D[a][b] + alpha * (reward_apply - rewards_int_D[a][b]), 2)
+            rewards_D_int[a][b] = round(
+                rewards_D_int[a][b] + alpha * (reward_apply - rewards_D_int[a][b]), 2)
 
 
 def check_to_int():
@@ -337,11 +341,11 @@ def minisquare_values(reward_dic, board_pos):
         z = "CCC"
     elif reward_dic == rewards_D:
         z = "DDD"
-    elif reward_dic == rewards_int_A:
+    elif reward_dic == rewards_A_int:
         z = "I_A"
-    elif reward_dic == rewards_int_B:
+    elif reward_dic == rewards_B_int:
         z = "I_B"
-    elif reward_dic == rewards_int_C:
+    elif reward_dic == rewards_C_int:
         z = "I_C"
     else:
         z = "I_D"
@@ -421,15 +425,15 @@ else:
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Data for visualizations
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-reward_dictionary_list = [rewards_A, rewards_B, rewards_C, rewards_D, rewards_int_A, rewards_int_B, rewards_int_C, rewards_int_D]
-excel_name_list = ["rewards_A", "rewards_B", "rewards_C", "rewards_D", "rewards_int_A", "rewards_int_B", "rewards_int_C", "rewards_int_D"]
-sheet_name_list = ["AA_", "BB", "CC", "DD," "intA_", "intB_", "intC_", "intD_"]
+reward_dictionary_list = [rewards_A, rewards_B, rewards_C, rewards_D, rewards_A_int, rewards_B_int, rewards_C_int, rewards_D_int]
+excel_name_list = ["rewards_A", "rewards_B", "rewards_C", "rewards_D", "rewards_A_int", "rewards_B_int", "rewards_C_int", "rewards_D_int"]
+sheet_name_list = ["AA_", "BB", "CC", "DD," "AAint", "BBint_", "CCint_", "DDint_"]
 
 
 reward_info_out = {"scenA": [rewards_A, "rewards_A", "AA"], "scenB": [rewards_B, "rewards_B", "BB"], "scenC": [rewards_C, "rewards_C", "CC"]
-                   , "scenD": [rewards_D, "rewards_D", "DD"], "intA": [rewards_int_A, "int_A", "intA"],
-                   "intB": [rewards_int_B, "int_B", "intB"], "intC": [rewards_int_C, "int_C", "intC"],
-                   "intD": [rewards_int_D, "int_D", "intD"]}
+                   , "scenD": [rewards_D, "rewards_D", "DD"], "intA": [rewards_A_int, "rewards_A_int", "AAint"],
+                   "intB": [rewards_B_int, "rewards_A_int", "BBint"], "intC": [rewards_C_int, "rewards_C_int", "CCint"],
+                   "intD": [rewards_D_int, "rewards_D_int", "DDint"]}
 
 for a in reward_info_out:
     dic00 = minisquare_values(reward_info_out[a][0], (0, 0))
@@ -762,3 +766,109 @@ for a in reward_info_out:
     pivot43.to_excel(writer, sheet_name=reward_info_out[a][2] + '43')
     pivot44.to_excel(writer, sheet_name=reward_info_out[a][2] + '44')
     writer.save()
+
+    fig,axn = plt.subplots(5, 5, sharex=True, sharey=True, figsize=(10, 10))
+    ax = plt.subplot(5, 5, 1)
+    cbar_ax = fig.add_axes([.91, .3, .03, .4])
+
+    sns.heatmap(pivot00, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 2)
+    sns.heatmap(pivot01, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 3)
+    sns.heatmap(pivot02, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 4)
+    sns.heatmap(pivot03, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 5)
+    sns.heatmap(pivot04, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 6)
+    sns.heatmap(pivot10, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 7)
+    sns.heatmap(pivot11, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 8)
+    sns.heatmap(pivot12, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 9)
+    sns.heatmap(pivot13, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 10)
+    sns.heatmap(pivot14, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 11)
+    sns.heatmap(pivot20, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 12)
+    sns.heatmap(pivot21, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 13)
+    sns.heatmap(pivot22, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 14)
+    sns.heatmap(pivot23, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 15)
+    sns.heatmap(pivot24, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 16)
+    sns.heatmap(pivot30, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 17)
+    sns.heatmap(pivot31, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 18)
+    sns.heatmap(pivot32, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 19)
+    sns.heatmap(pivot33, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 20)
+    sns.heatmap(pivot34, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 21)
+    sns.heatmap(pivot40, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 22)
+    sns.heatmap(pivot41, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 23)
+    sns.heatmap(pivot42, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 24)
+    sns.heatmap(pivot43, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    ax = plt.subplot(5, 5, 25)
+    sns.heatmap(pivot44, annot=False, fmt="g", cmap='crest_r', cbar=False, ax=ax)
+    ax.set_aspect('equal')
+
+    fig.tight_layout(rect=[0, 0, .9, 1])
+    fig.savefig(reward_info_out[a][2] + "_fullgrid.png")
