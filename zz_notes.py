@@ -3,12 +3,17 @@ Ideas:
 
 Soon:
 
+Python
+  - streamline script/files so they stay together as discrete chunks
 
 Results / visualization
-  - using excel charts to make seaborn
   - Making an "epochs" training graph similar to deep learning
+  - Making an Excel stats summary for each scenario
+  - graph mean reward
 
 Model
+  - add a scaling down reward by time -- maximum steps per epsiode (and reward can't be negative)
+  - penalty for trying to run into a wall or illegal move
   - adding discount factor (backprop) and next state lookup - Q[s, a] = Q[s, a] + alpha*(R + gamma*Max[Q(s’, A)] - Q[s, a])
   - adding non-deterministic factor
 
@@ -23,6 +28,8 @@ So if the agent goes to the center square (2,2) and goes up to (1,2) at some poi
 
 Is this where order in backpropagation finally becomes important? Because the target square (0,
 
+Don't forget:
+- 5.6789 hack
 
 """
 
