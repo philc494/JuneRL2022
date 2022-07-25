@@ -1,4 +1,14 @@
 """
+Questions:
+  - reward function - email question and decreasing with step time exponentially, max steps?
+  -
+"""
+
+
+
+
+
+"""
 Ideas:
 
 Soon:

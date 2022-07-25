@@ -2,10 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import z_config
 import os
-
-# todo: visualization linked so all squares use same axes
 
 
 def minisquare_values(reward_dic, board_pos):
@@ -16,11 +13,14 @@ def minisquare_values(reward_dic, board_pos):
     return mini_dic
 
 
-def visualize_tables(aa, bb, cc, dd, ai, bi, ci, di):
-    reward_info_out = {"scenA": [aa, "AA_rewards", "AA"], "scenB": [bb, "BB_rewards", "BB"], "scenC": [cc, "CC_rewards", "CC"]
-                       , "scenD": [dd, "DD_rewards", "DD"], "intA": [ai, "AAint_rewards", "AAint"],
-                       "intB": [bi, "BBint_rewards", "BBint"], "intC": [ci, "CCint_rewards", "CCint"],
-                       "intD": [di, "DDint_rewards", "DDint"]}
+def visualize_tables(model, resultsdic):
+    reward_info_out = {"scenA": [resultsdic[model]["A"], "AA_rewards", "AA"], "scenB": [resultsdic[model]["B"], "BB_rewards", "BB"],
+                       "scenC": [resultsdic[model]["C"], "CC_rewards", "CC"],
+                       "scenD": [resultsdic[model]["D"], "DD_rewards", "DD"],
+                       "intA": [resultsdic[model]["Aint"], "AAint_rewards", "AAint"],
+                       "intB": [resultsdic[model]["Bint"], "BBint_rewards", "BBint"],
+                       "intC": [resultsdic[model]["Cint"], "CCint_rewards", "CCint"],
+                       "intD": [resultsdic[model]["Dint"], "DDint_rewards", "DDint"]}
     for a in reward_info_out:
         dic_value_list = []
         for b in reward_info_out[a][0]:
@@ -407,12 +407,12 @@ def visualize_tables(aa, bb, cc, dd, ai, bi, ci, di):
         pivot43 = df43.pivot(index='X-direction', columns='Y-direction', values='value')
         pivot44 = df44.pivot(index='X-direction', columns='Y-direction', values='value')
 
-        directory = str(z_config.scenario_num)
+        directory = str(model)
         parent_dir = '/Users/philcrawford/PycharmProjects/JuneRL2022/results'
         path = os.path.join(parent_dir, directory)
         if not path:
             os.mkdir(path)
-        writer = pd.ExcelWriter(path + '/' + z_config.scenario_num + '_' + reward_info_out[a][1] + '.xlsx', engine='xlsxwriter')
+        writer = pd.ExcelWriter(path + '/' + str(model) + '_' + reward_info_out[a][1] + '.xlsx', engine='xlsxwriter')
         pivot00.to_excel(writer, sheet_name=reward_info_out[a][2] + '00')
         pivot01.to_excel(writer, sheet_name=reward_info_out[a][2] + '01')
         pivot02.to_excel(writer, sheet_name=reward_info_out[a][2] + '02')
@@ -551,4 +551,4 @@ def visualize_tables(aa, bb, cc, dd, ai, bi, ci, di):
         ax.set_aspect('equal')
 
         fig.tight_layout(rect=[0, 0, .9, 1])
-        fig.savefig(path + '/' + z_config.scenario_num + '_' + reward_info_out[a][2] + "_fullgrid.png")
+        fig.savefig(path + '/' + str(model) + '_' + reward_info_out[a][2] + "_fullgrid.png")
