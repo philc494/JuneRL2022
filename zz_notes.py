@@ -9,6 +9,46 @@ Questions:
 
 
 """
+Since Jul28 meeting:
+- problem of deterministic but getting on bad paths
+    - done: change so if a square = 0, it can't go there because it's never gone there
+    - done: make it so reward decreases approaching 0 and is always positive
+    - todo: solve theoretically handling "ABCD ABACAD" results and testwise
+        - "game1:
+        - "game2:
+        - "game3:..."
+    - todo: solve theoretically handling when it gets in a loop
+        - taking 2nd best option the 2nd time around? but for first or last move or middle?
+        
+        
+        
+    
+
+Jul28 meeting:
+- Test set: 1 sample w/o exploration
+- stats: visualize avg. number of times pos-act was taken --> action count
+
+- next steps
+    - one game, take pos-act count + distance metric from interim + act moves, reset, do again
+    
+other models:
+    -model: "exploration" = 2nd best option instead of random
+    
+parameters:
+- # games trained
+
+My next steps:
+- build this metric of pos-act count
+
+
+
+
+
+
+
+
+
+
 Ideas:
 
 Soon:

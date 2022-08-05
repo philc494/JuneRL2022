@@ -3,9 +3,10 @@ import random
 import collections.abc
 
 
-def qtables_8(train_pattern, test_pattern, train_iterations, test_iterations):
-    base_reward = 20
-    act_step_cost = 1
+def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations):
+    base_reward = 10
+    game_max = 50
+    act_step_cost = base_reward/game_max
     exp_rate = 0.2
     alpha = 0.2  # learning rate
     gamma = 0.8  # discount factor # todo: incorporate
@@ -434,6 +435,29 @@ def qtables_8(train_pattern, test_pattern, train_iterations, test_iterations):
         seen = set()
         return [x for x in sequence if not (x in seen or seen.add(x))]
 
+    def check_testact_loop(action, currpos, scenario):
+        if scenario == "A":
+            if rewards_A_testcount[currpos][action] == 1:
+                return True
+            else:
+                return False
+        elif scenario == "B":
+            if rewards_B_testcount[currpos][action] == 1:
+                return True
+            else:
+                return False
+        elif scenario == "C":
+            if rewards_C_testcount[currpos][action] == 1:
+                return True
+            else:
+                return False
+        else:
+            if rewards_D_testcount[currpos][action] == 1:
+                return True
+            else:
+                return False
+
+
     while game < games:
         scenario = train_seq[game]
         win_pos = set_win_pos(scenario)
@@ -457,6 +481,16 @@ def qtables_8(train_pattern, test_pattern, train_iterations, test_iterations):
                         game + 1,
                         games,
                         act_move_counter))
+                moves_per_train.append(act_move_counter)
+                game_num_train.append(game + 1)
+                scenario_per_train.append(scenario)
+                game += 1
+                act_move_counter = 0
+                int_action_list = []
+                act_action_list = []
+                into_int_state = True
+                prev_scenario = scenario
+            elif act_move_counter == game_max:
                 moves_per_train.append(act_move_counter)
                 game_num_train.append(game + 1)
                 scenario_per_train.append(scenario)
@@ -490,7 +524,7 @@ def qtables_8(train_pattern, test_pattern, train_iterations, test_iterations):
         if go_to_int:
             int_action = pick_int_move(prev_scenario)
             # if int_action == "":
-                # todo: make it clear it got stuck here and end the game
+            # todo: make it clear it got stuck here and end the game
             int_action_coord = int_action_trans[int_action]
             int_action_list.append((current_pos, int_action_coord))
             int_action_count(current_pos, int_action_coord, prev_scenario)
@@ -512,8 +546,8 @@ def qtables_8(train_pattern, test_pattern, train_iterations, test_iterations):
                 prev_scenario = scenario
                 print("game over")
             else:
-                print("picking act move")
                 act_action = pick_act_move(scenario)
+                # if check_testact_loop(act_action, current_pos):
                 act_action_coord = act_action_trans[act_action]
                 act_action_list.append((current_pos, act_action_coord))
                 act_action_count(current_pos, act_action_coord, scenario)

@@ -106,15 +106,15 @@ def qtables_8(train_pattern, test_pattern, train_iterations, test_iterations):
         rewards_D_int[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                             (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
         rewards_A_count[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                            (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+                              (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
         rewards_B_count[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                            (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+                              (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
         rewards_C_count[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                            (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+                              (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
         rewards_D_count[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                            (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+                              (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
         rewards_A_intcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                            (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
+                                 (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
         rewards_B_intcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                                  (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
         rewards_C_intcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
@@ -169,7 +169,8 @@ def qtables_8(train_pattern, test_pattern, train_iterations, test_iterations):
         "uleft",
         "uright",
         "dleft",
-        "dright"]
+        "dright",
+        "stay"]
     int_actions = [
         "up",
         "down",
@@ -221,126 +222,73 @@ def qtables_8(train_pattern, test_pattern, train_iterations, test_iterations):
         return current_pos
 
     def pick_act_move(win_target):
-        next_act_action = ""
         while True:
             random.shuffle(act_actions)
-            if not test_state:
-                if np.random.uniform(0, 1) <= exp_rate:
-                    next_act_action = np.random.choice(act_actions)
-                else:
-                    best_reward = -1000000
-                    for a in act_actions:
-                        if win_target == "A":
-                            poss_reward = rewards_A[current_pos][act_action_trans[a]]
-                            if poss_reward > best_reward:
-                                next_act_action = a
-                                best_reward = poss_reward
-                        elif win_target == "B":
-                            poss_reward = rewards_B[current_pos][act_action_trans[a]]
-                            if poss_reward > best_reward:
-                                next_act_action = a
-                                best_reward = poss_reward
-                        elif win_target == "C":
-                            poss_reward = rewards_C[current_pos][act_action_trans[a]]
-                            if poss_reward > best_reward:
-                                next_act_action = a
-                                best_reward = poss_reward
-                        else:
-                            poss_reward = rewards_D[current_pos][act_action_trans[a]]
-                            if poss_reward > best_reward:
-                                next_act_action = a
-                                best_reward = poss_reward
-                        new_position = take_next_move(next_act_action)
-                        if new_position == current_pos and next_act_action != "stay":
-                            continue
-                        else:
-                            return next_act_action
+            next_act_action = ""
+            if np.random.uniform(0, 1) <= exp_rate:
+                next_act_action = np.random.choice(act_actions)
             else:
                 best_reward = -1000000
                 for a in act_actions:
                     if win_target == "A":
                         poss_reward = rewards_A[current_pos][act_action_trans[a]]
-                        if poss_reward > best_reward and poss_reward != 0:
+                        if poss_reward > best_reward:
                             next_act_action = a
                             best_reward = poss_reward
                     elif win_target == "B":
                         poss_reward = rewards_B[current_pos][act_action_trans[a]]
-                        if poss_reward > best_reward and poss_reward != 0:
+                        if poss_reward > best_reward:
                             next_act_action = a
                             best_reward = poss_reward
                     elif win_target == "C":
                         poss_reward = rewards_C[current_pos][act_action_trans[a]]
-                        if poss_reward > best_reward and poss_reward != 0:
+                        if poss_reward > best_reward:
                             next_act_action = a
                             best_reward = poss_reward
                     else:
                         poss_reward = rewards_D[current_pos][act_action_trans[a]]
-                        if poss_reward > best_reward and poss_reward != 0:
+                        if poss_reward > best_reward:
                             next_act_action = a
                             best_reward = poss_reward
+            new_position = take_next_move(next_act_action)
+            if new_position == current_pos and next_act_action != "stay":
+                continue
+            else:
                 return next_act_action
 
     def pick_int_move(prev_target):
-        next_int_action = ""
         while True:
-            random.shuffle(int_actions)
-            if not test_state:
-                if np.random.uniform(0, 1) <= exp_rate:
-                    next_int_action = np.random.choice(int_actions)
-                else:
-                    best_reward = -1000000
-                    for a in int_actions:
-                        if prev_target == "A":
-                            poss_reward = rewards_A_int[current_pos][int_action_trans[a]]
-                            if poss_reward > best_reward:
-                                next_int_action = a
-                                best_reward = poss_reward
-                        elif prev_target == "B":
-                            poss_reward = rewards_B_int[current_pos][int_action_trans[a]]
-                            if poss_reward > best_reward:
-                                next_int_action = a
-                                best_reward = poss_reward
-                        elif prev_target == "C":
-                            poss_reward = rewards_C_int[current_pos][int_action_trans[a]]
-                            if poss_reward > best_reward:
-                                next_int_action = a
-                                best_reward = poss_reward
-                        else:
-                            poss_reward = rewards_D_int[current_pos][int_action_trans[a]]
-                            if poss_reward > best_reward:
-                                next_int_action = a
-                                best_reward = poss_reward
-                        new_position = take_next_move(next_int_action)
-                        if new_position == current_pos and next_int_action != "stay":
-                            continue
-                        else:
-                            return next_int_action
+            random.shuffle(act_actions)
+            next_int_action = ""
+            if np.random.uniform(0, 1) <= exp_rate:
+                next_int_action = np.random.choice(int_actions)
             else:
                 best_reward = -1000000
                 for a in int_actions:
                     if prev_target == "A":
                         poss_reward = rewards_A_int[current_pos][int_action_trans[a]]
-                        print("possible reward for test int action {} is {}".format(a, poss_reward))
-                        if poss_reward > best_reward and poss_reward != 0:
+                        if poss_reward > best_reward:
                             next_int_action = a
                             best_reward = poss_reward
                     elif prev_target == "B":
                         poss_reward = rewards_B_int[current_pos][int_action_trans[a]]
-                        print("possible reward for test int action {} is {}".format(a, poss_reward))
-                        if poss_reward > best_reward and poss_reward != 0:
+                        if poss_reward > best_reward:
                             next_int_action = a
                             best_reward = poss_reward
                     elif prev_target == "C":
                         poss_reward = rewards_C_int[current_pos][int_action_trans[a]]
-                        if poss_reward > best_reward and poss_reward != 0:
+                        if poss_reward > best_reward:
                             next_int_action = a
                             best_reward = poss_reward
                     else:
                         poss_reward = rewards_D_int[current_pos][int_action_trans[a]]
-                        if poss_reward > best_reward and poss_reward != 0:
+                        if poss_reward > best_reward:
                             next_int_action = a
                             best_reward = poss_reward
-                print("returning int action {}".format(next_int_action))
+            new_position = take_next_move(next_int_action)
+            if new_position == current_pos and next_int_action != "stay":
+                continue
+            else:
                 return next_int_action
 
     def dict_update(d, update):
@@ -384,6 +332,7 @@ def qtables_8(train_pattern, test_pattern, train_iterations, test_iterations):
             else:
                 rewards_D_int[a][b] = round(
                     rewards_D_int[a][b] + alpha * (reward_apply - rewards_D_int[a][b]), 2)
+
 
     def int_action_count(currpos, move, prevscenario):
         if not test_state:
@@ -474,14 +423,11 @@ def qtables_8(train_pattern, test_pattern, train_iterations, test_iterations):
                 current_pos = take_next_move(act_action)
                 act_move_counter += 1
 
-    print("training done")
     test_seq = test_pattern * test_iterations
     games = len(test_seq)
     game = 0
-    into_int_state = True
-    test_state = True
-    prev_scenario = test_seq[-1]
-    current_pos = set_win_pos(prev_scenario)
+    current_pos = (2, 2)
+    into_int_state = False
 
     while game < games:
         scenario = test_seq[game]
@@ -489,18 +435,20 @@ def qtables_8(train_pattern, test_pattern, train_iterations, test_iterations):
         go_to_int = check_to_int()
         if go_to_int:
             int_action = pick_int_move(prev_scenario)
-            # if int_action == "":
-                # todo: make it clear it got stuck here and end the game
             int_action_coord = int_action_trans[int_action]
             int_action_list.append((current_pos, int_action_coord))
             int_action_count(current_pos, int_action_coord, prev_scenario)
             current_pos = take_next_move(int_action)
             int_move_counter += 1
-            print("int move counter = {}".format(int_move_counter))
         else:
             into_int_state = False
             int_move_counter = 0
             if current_pos == win_pos:
+                if (game + 1) % (games / 10) == 0:
+                    print("Model 1 testing game {} of {} completed:  Act moves in last game: {}".format(
+                        game + 1,
+                        games,
+                        act_move_counter))
                 moves_per_test.append(act_move_counter)
                 game_num_test.append(game + 1)
                 scenario_per_test.append(scenario)
@@ -510,22 +458,13 @@ def qtables_8(train_pattern, test_pattern, train_iterations, test_iterations):
                 act_action_list = []
                 into_int_state = True
                 prev_scenario = scenario
-                print("game over")
-            else:
-                print("picking act move")
+            else:  # take another move in action state
                 act_action = pick_act_move(scenario)
                 act_action_coord = act_action_trans[act_action]
                 act_action_list.append((current_pos, act_action_coord))
                 act_action_count(current_pos, act_action_coord, scenario)
                 current_pos = take_next_move(act_action)
-                print(current_pos)
                 act_move_counter += 1
-                print(act_move_counter)
-                # todo: check if same square gets touched twice in testing, if so then end b/c endless loop
-        # int_action = pick_int_move(prev_scenario)
-        # int_action_coord = int_action_trans[int_action]
-        # int_action_list.append((current_pos, int_action_coord))
-        # int_action_count(current_pos, int_action_coord, prev_scenario)
     return {'A': rewards_A, 'B': rewards_B, 'C': rewards_C, 'D': rewards_D, 'Aint': rewards_A_int,
             'Bint': rewards_B_int, 'Cint': rewards_C_int,
             'Dint': rewards_D_int, 'train_moves': moves_per_train, 'games_train': game_num_train,
