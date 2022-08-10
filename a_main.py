@@ -5,9 +5,9 @@ from z_visualization import visualize_tables
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 I. Select parameters
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-train_pattern = "AB"
+train_pattern = "ABC"
 test_pattern = train_pattern
-train_iterations = 250
+train_iterations = 50
 test_iterations = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -16,7 +16,7 @@ II. Select models to analyze:
 1: 8 Q-tables: negative reward possible
 2: 8 Q-tablespos: game over at 50, no negative rewards
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-model_list = [0]
+model_list = [2]
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -37,7 +37,7 @@ stats = {}
 for model in model_list:
     results[model] = b_modelselector.model_selector(model, parameters)
     # stats[model] = z_statistics.stats(model, results)
-    visualize_tables(model, results)
+    # visualize_tables(model, results)
 
 
 

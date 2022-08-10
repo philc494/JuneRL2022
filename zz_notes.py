@@ -2,22 +2,44 @@
 Questions:
   - reward function - email question and decreasing with step time exponentially, max steps?
   -
+  
+  
+"""""""""""
+Aug10
+- fix game max approach by applying the 0 reward
+- 100 x 100 iterations -- average used for testing
+
+- test after average
+- genetic: which set of Q values has the best fitness
+    - adding jitter
+    - alternative to average of 100
+
+- same model can give different q values; best possible q values are the best fitness
+
+- ABAC --> variance of Q values chosen
+
+- sequences from paper
+"""""""""""""
+
+
+
 """
+Later:
+- jitter all act-pos directions, compare
 
+Since Aug10 meeting:
+- fixed so it applies reward of 0 even if max steps reached
 
-
-
-
-"""
 Since Jul28 meeting:
 - problem of deterministic but getting on bad paths
     - done: change so if a square = 0, it can't go there because it's never gone there
     - done: make it so reward decreases approaching 0 and is always positive
-    - todo: solve theoretically handling "ABCD ABACAD" results and testwise
+    - done: add visualization of the "best path"
+    - todo: solve theoretically handling "ABCD ABACAD" results and the "best path" for the test
         - "game1:
         - "game2:
         - "game3:..."
-    - todo: solve theoretically handling when it gets in a loop
+    - todo: solve theoretically handling when it gets in a loop due to a hardly chosen, but high reward square
         - taking 2nd best option the 2nd time around? but for first or last move or middle?
         
         
