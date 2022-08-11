@@ -4,10 +4,13 @@ Questions:
   -
   
   
-"""""""""""
+""""""""""""
 Aug10
-- fix game max approach by applying the 0 reward
 - 100 x 100 iterations -- average used for testing
+- check move picking function - make sure it's not just repeating when it's at a 0 against wall until random choice
+- create a separate test module which every future model can use
+- consider changing to uniform distribution of moves instead of epsilon greedy
+
 
 - test after average
 - genetic: which set of Q values has the best fitness
@@ -18,12 +21,16 @@ Aug10
 
 - ABAC --> variance of Q values chosen
 
+
+- next steps:
+   have relative probabilities (4-2-1 --> take these x % of the time) (can raise these to a power to make more important)
+
 - sequences from paper
-"""""""""""""
+""""""""""""""
 
 
 
-"""
+""""""
 Later:
 - jitter all act-pos directions, compare
 
@@ -145,4 +152,4 @@ Next steps:
 - build a test condition
 - Other RL models solving similar problems
 - DQN
-"""
+"""""

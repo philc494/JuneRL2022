@@ -1,12 +1,11 @@
 import numpy as np
 import random
 import collections.abc
+from math import e
 
 
 def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations):
-    base_reward = 10
-    game_max = 50
-    act_step_cost = base_reward/game_max
+    base_reward = 100
     exp_rate = 0.2
     alpha = 0.2  # learning rate
     gamma = 0.8  # discount factor # todo: incorporate
@@ -25,7 +24,7 @@ def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations)
     test_state = False
     int_dist_list = []
     int_dist_test_list = []
-    int_move_counter = 0
+    int_move_counter = 4
     act_move_counter = 1
     game = 0
     start_pos = (2, 2)
@@ -143,26 +142,27 @@ def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations)
         blank[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                     (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
 
-    A_int_offlimits = [(0, 4), (1, 4), (2, 4), (3, 4), (4, 4), (4, 0), (4, 1), (4, 2), (4, 3)]
-    B_int_offlimits = [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3), (4, 4)]
-    C_int_offlimits = [(0, 4), (1, 4), (2, 4), (3, 4), (4, 4), (4, 0), (4, 1), (4, 2), (4, 3)]
-    D_int_offlimits = [(1, 0), (2, 0), (3, 0), (4, 0), (4, 4), (0, 0), (0, 1), (0, 2), (0, 3)]
-    for a in A_int_offlimits:
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                rewards_A_int[a][(i, j)] = 5.6789
-    for a in B_int_offlimits:
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                rewards_B_int[a][(i, j)] = 5.6789
-    for a in C_int_offlimits:
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                rewards_C_int[a][(i, j)] = 5.6789
-    for a in D_int_offlimits:
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                rewards_D_int[a][(i, j)] = 5.6789
+
+    # A_int_offlimits = [(0, 4), (1, 4), (2, 4), (3, 4), (4, 4), (4, 0), (4, 1), (4, 2), (4, 3)]
+    # B_int_offlimits = [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2), (4, 3), (4, 4)]
+    # C_int_offlimits = [(0, 4), (1, 4), (2, 4), (3, 4), (4, 4), (4, 0), (4, 1), (4, 2), (4, 3)]
+    # D_int_offlimits = [(1, 0), (2, 0), (3, 0), (4, 0), (4, 4), (0, 0), (0, 1), (0, 2), (0, 3)]
+    # for a in A_int_offlimits:
+    #     for i in range(-1, 2):
+    #         for j in range(-1, 2):
+    #             rewards_A_int[a][(i, j)] = -9.9
+    # for a in B_int_offlimits:
+    #     for i in range(-1, 2):
+    #         for j in range(-1, 2):
+    #             rewards_B_int[a][(i, j)] = -9.9
+    # for a in C_int_offlimits:
+    #     for i in range(-1, 2):
+    #         for j in range(-1, 2):
+    #             rewards_C_int[a][(i, j)] = -9.9
+    # for a in D_int_offlimits:
+    #     for i in range(-1, 2):
+    #         for j in range(-1, 2):
+    #             rewards_D_int[a][(i, j)] = -9.9
 
     act_actions = [
         "up",
@@ -172,7 +172,8 @@ def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations)
         "uleft",
         "uright",
         "dleft",
-        "dright"]
+        "dright",
+        "stay"]
     int_actions = [
         "up",
         "down",
@@ -187,6 +188,9 @@ def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations)
         0, 1), "uleft": (-1, -1), "uright": (-1, 1), "dleft": (1, -1), "dright": (1, 1), "stay": (0, 0)}
     int_action_trans = {"up": (-1, 0), "down": (1, 0), "left": (0, -1), "right": (
         0, 1), "uleft": (-1, -1), "uright": (-1, 1), "dleft": (1, -1), "dright": (1, 1), "stay": (0, 0)}
+
+    def get_exp(n):
+        return e ** n
 
     def set_win_pos(letter):
         if letter == "A":
@@ -459,8 +463,6 @@ def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations)
     def int_distance_calc(posafterint, next_win_target):
         return ((posafterint[0] - next_win_target[0]) ** 2 + (posafterint[1] - next_win_target[1]) ** 2) ** (1/2)
 
-    prev_scenario = train_seq[game][-1]
-
     while game < games:
         scenario = train_seq[game]
         win_pos = set_win_pos(scenario)
@@ -480,11 +482,11 @@ def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations)
                 into_int_state = False
             int_move_counter = 0
             if current_pos == win_pos:
-                reward = base_reward - (act_move_counter * act_step_cost)
+                reward = max(base_reward / (get_exp(.20 * act_move_counter)), 0)
                 update_act_rewards(reward)
                 update_int_rewards(reward)
-                if (game + 1) % (games / 10) == 0:
-                    print("Model 1 training game {} of {} completed:  Act moves in last game: {}".format(
+                if (game + 1) % (games / 2) == 0:
+                    print("Model 2 training game {} of {} completed:  Act moves in last game: {}".format(
                         game + 1,
                         games,
                         act_move_counter))
@@ -505,60 +507,21 @@ def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations)
                 current_pos = take_next_move(act_action)
                 act_move_counter += 1
 
-    print("training done")
-    test_seq = test_pattern * test_iterations
-    games = len(test_seq)
-    game = 0
-    into_int_state = True
-    test_state = True
-    prev_scenario = test_seq[-1]
-    current_pos = set_win_pos(prev_scenario)
+    rewards_return = {'A': rewards_A, 'B': rewards_B, 'C': rewards_C, 'D': rewards_D, 'Aint': rewards_A_int,
+            'Bint': rewards_B_int, 'Cint': rewards_C_int,
+            'Dint': rewards_D_int}
+    info_return = {'train_moves': moves_per_train, 'games_train': game_num_train,
+            'scen_train': scenario_per_train, 'test_moves': moves_per_test, 'games_test': game_num_test,
+            'scen_test': scenario_per_test, "Acount": rewards_A_count, "Bcount": rewards_B_count,
+            "Ccount": rewards_C_count, "Dcount": rewards_D_count, "Aintcount": rewards_A_intcount,
+            "Bintcount": rewards_B_intcount, "Cintcount": rewards_C_intcount, "Dintcount": rewards_D_intcount,
+            "Atestcount": rewards_A_testcount, "Btestcount": rewards_B_testcount,
+            "Ctestcount": rewards_C_testcount, "Dtestcount": rewards_D_testcount,
+            "Atestintcount": rewards_A_inttestcount, "Btestintcount": rewards_B_inttestcount,
+            "Ctestintcount": rewards_C_inttestcount, "Dtestintcount": rewards_D_inttestcount,
+            "Intdistances": int_dist_list}
 
-    while game < games:
-        scenario = test_seq[game]
-        win_pos = set_win_pos(scenario)
-        go_to_int = check_to_int()
-        if go_to_int:
-            int_action = pick_int_move(prev_scenario)
-            # if int_action == "":
-            # todo: make it clear it got stuck here and end the game
-            int_action_coord = int_action_trans[int_action]
-            int_action_list.append((current_pos, int_action_coord))
-            int_action_count(current_pos, int_action_coord, prev_scenario)
-            current_pos = take_next_move(int_action)
-            int_move_counter += 1
-        else:
-            while into_int_state:
-                int_lastpos = current_pos
-                int_dist_test = int_distance_calc(int_lastpos, win_pos)
-                int_dist_test_list.append(int_dist_test)
-                into_int_state = False
-            int_move_counter = 0
-            if current_pos == win_pos:
-                moves_per_test.append(act_move_counter)
-                game_num_test.append(game + 1)
-                scenario_per_test.append(scenario)
-                game += 1
-                act_move_counter = 0
-                int_action_list = []
-                act_action_list = []
-                into_int_state = True
-                prev_scenario = scenario
-            else:
-                act_action = pick_act_move(scenario)
-                # if check_testact_loop(act_action, current_pos):
-                act_action_coord = act_action_trans[act_action]
-                act_action_list.append((current_pos, act_action_coord))
-                act_action_count(current_pos, act_action_coord, scenario)
-                current_pos = take_next_move(act_action)
-                act_move_counter += 1
-        # int_action = pick_int_move(prev_scenario)
-        # int_action_coord = int_action_trans[int_action]
-        # int_action_list.append((current_pos, int_action_coord))
-        # int_action_count(current_pos, int_action_coord, prev_scenario)
-    print(int_dist_list)
-    print(len(int_dist_list))
-    return {'A': rewards_A, 'B': rewards_B, 'C': rewards_C, 'D': rewards_D, 'Aint': rewards_A_int,
+    return rewards_return, info_return, {'A': rewards_A, 'B': rewards_B, 'C': rewards_C, 'D': rewards_D, 'Aint': rewards_A_int,
             'Bint': rewards_B_int, 'Cint': rewards_C_int,
             'Dint': rewards_D_int, 'train_moves': moves_per_train, 'games_train': game_num_train,
             'scen_train': scenario_per_train, 'test_moves': moves_per_test, 'games_test': game_num_test,
@@ -570,5 +533,3 @@ def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations)
             "Atestintcount": rewards_A_inttestcount, "Btestintcount": rewards_B_inttestcount,
             "Ctestintcount": rewards_C_inttestcount, "Dtestintcount": rewards_D_inttestcount,
             "Intdistances": int_dist_list}
-
-
