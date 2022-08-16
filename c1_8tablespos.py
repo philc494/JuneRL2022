@@ -460,8 +460,6 @@ def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations)
             else:
                 return False
 
-    def int_distance_calc(posafterint, next_win_target):
-        return ((posafterint[0] - next_win_target[0]) ** 2 + (posafterint[1] - next_win_target[1]) ** 2) ** (1/2)
 
     while game < games:
         scenario = train_seq[game]
@@ -477,7 +475,6 @@ def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations)
         else:
             while into_int_state:
                 int_lastpos = current_pos
-                int_dist = int_distance_calc(int_lastpos, win_pos)
                 int_dist_list.append(int_dist)
                 into_int_state = False
             int_move_counter = 0
@@ -512,14 +509,7 @@ def qtables_8pos(train_pattern, test_pattern, train_iterations, test_iterations)
             'Dint': rewards_D_int}
     info_return = {'train_moves': moves_per_train, 'games_train': game_num_train,
             'scen_train': scenario_per_train, 'test_moves': moves_per_test, 'games_test': game_num_test,
-            'scen_test': scenario_per_test, "Acount": rewards_A_count, "Bcount": rewards_B_count,
-            "Ccount": rewards_C_count, "Dcount": rewards_D_count, "Aintcount": rewards_A_intcount,
-            "Bintcount": rewards_B_intcount, "Cintcount": rewards_C_intcount, "Dintcount": rewards_D_intcount,
-            "Atestcount": rewards_A_testcount, "Btestcount": rewards_B_testcount,
-            "Ctestcount": rewards_C_testcount, "Dtestcount": rewards_D_testcount,
-            "Atestintcount": rewards_A_inttestcount, "Btestintcount": rewards_B_inttestcount,
-            "Ctestintcount": rewards_C_inttestcount, "Dtestintcount": rewards_D_inttestcount,
-            "Intdistances": int_dist_list}
+            'scen_test': scenario_per_test}
 
     return rewards_return, info_return, {'A': rewards_A, 'B': rewards_B, 'C': rewards_C, 'D': rewards_D, 'Aint': rewards_A_int,
             'Bint': rewards_B_int, 'Cint': rewards_C_int,

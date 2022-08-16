@@ -11,7 +11,7 @@ I. Select parameters
 train_pattern = "AB"
 test_pattern = train_pattern
 train_iterations = 250
-train_sets = 20
+train_sets = 3
 test_iterations = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -31,9 +31,10 @@ parameters = {'train_pattern': train_pattern, 'test_pattern': test_pattern, 'tra
               'test_iterations': test_iterations}
 
 (input(" ---Train/Test Settings--- \n "
-              "Training pattern: {}\n Iterations: {}\n Total training games: {}\n Testing pattern: {}\n Testing iterations: {}\n"
+              "Training pattern: {}\n Iterations: {}\n Training sets: {}\n\n Testing pattern: {}\n Testing iterations: {}\n"
                 " Total testing games: {}\n  "
-              "---Press enter to continue--- ".format(train_pattern, train_iterations, len(train_pattern) * train_iterations,
+              "---Press enter to continue--- ".format(train_pattern, train_iterations,
+                                                            train_sets,
                                                            test_pattern, test_iterations, len(test_pattern) * test_iterations,
                                                            )))
 results = {}
@@ -90,15 +91,15 @@ for a in model_list:
             for d in act_list:
                 resultsfinal[a][b][c][d] = round(sum(reward_tempdic[a][b][c][d].values()) / len(set_list), 2)
 
-print(reward_tempdic[2]['A'][(3, 3)])
-print(resultsfinal[2]['A'][(3, 3)])
+print(reward_tempdic[2]['A'][(3, 3)][(-1, -1)])
+print(resultsfinal[2]['A'][(3, 3)][(-1, -1)])
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Run statistics and visualizations based on this final averaged set for each model
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 for model in model_list:
-    # stats[resultsfinal[model]] = z_statistics.stats(resultsfinal[model], results)
+    # stats[resultsfinal[model]] = z_statistics.stats(model, resultsfinal[model])
     visualize_tables(model, resultsfinal[model])
 
 
