@@ -6,26 +6,25 @@ Questions:
   
 """"""""""""
 Aug10
-- 100 x 100 iterations -- average used for testing
-- check move picking function - make sure it's not just repeating when it's at a 0 against wall until random choice
-- create a separate test module which every future model can use
-- consider changing to uniform distribution of moves instead of epsilon greedy
+Done:
+- finished "sets" approach
+- built test module / proved it follows path correctly
+- made it start with an interim B 
+- made test module mostly open to any parameters
+- made model 1 that uses distribution instead of epsilon-greedy - raise to power?
 
 
-- test after average
-- genetic: which set of Q values has the best fitness
-    - adding jitter
-    - alternative to average of 100
 
-- same model can give different q values; best possible q values are the best fitness
+
 
 - ABAC --> variance of Q values chosen
 
 
 - next steps:
-   have relative probabilities (4-2-1 --> take these x % of the time) (can raise these to a power to make more important)
+    try sequences from paper
+    come up with decent measures for model performance - variance, distance, action moves
+        
 
-- sequences from paper
 """"""""""""""
 
 

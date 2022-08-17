@@ -3,10 +3,9 @@ import random
 import collections.abc
 
 
-def test_model(testdic, testseq):
-    into_int_state = False
-    int_move_counter = 4
-    act_move_counter = 1
+def test_model(testdic, testseq, model):
+    int_move_counter = 0
+    act_move_counter = 0
     board_rows = 5
     board_cols = 5
     win_obj_A = (0, 0)
@@ -14,7 +13,13 @@ def test_model(testdic, testseq):
     win_obj_C = (4, 0)
     win_obj_D = (4, 4)
     start_pos = (2, 2)
-    current_pos = start_pos
+
+
+    int_action_list = []
+    act_action_list = []
+    moves_per_test = []
+    game_num_test = []
+    scenario_per_test = []
 
     act_actions = [
         "up",
@@ -61,28 +66,62 @@ def test_model(testdic, testseq):
         next_int_action = ""
         random.shuffle(int_actions)
         best_reward = -1000000
-        for a in int_actions:
-            if prev_target == "A":
+        if prev_target == "A":
+            for a in int_actions:
                 poss_reward = testdic['Aint'][current_pos][int_action_trans[a]]
                 if poss_reward > best_reward:
                     next_int_action = a
                     best_reward = poss_reward
-            elif prev_target == "B":
+        elif prev_target == "B":
+            for a in int_actions:
                 poss_reward = testdic['Bint'][current_pos][int_action_trans[a]]
                 if poss_reward > best_reward:
                     next_int_action = a
                     best_reward = poss_reward
-            elif prev_target == "C":
+        elif prev_target == "C":
+            for a in int_actions:
                 poss_reward = testdic['Cint'][current_pos][int_action_trans[a]]
                 if poss_reward > best_reward:
                     next_int_action = a
                     best_reward = poss_reward
-            else:
+        else:
+            for a in int_actions:
                 poss_reward = testdic['Dint'][current_pos][int_action_trans[a]]
                 if poss_reward > best_reward:
                     next_int_action = a
                     best_reward = poss_reward
         return next_int_action
+
+    def pick_act_move(win_target):
+        next_act_action = ""
+        while True:
+            random.shuffle(act_actions)
+            best_reward = -1000000
+            if win_target == "A":
+                for a in act_actions:
+                    poss_reward = testdic['A'][current_pos][act_action_trans[a]]
+                    if poss_reward > best_reward:
+                        next_act_action = a
+                        best_reward = poss_reward
+            elif win_target == "B":
+                for a in act_actions:
+                    poss_reward = testdic['B'][current_pos][act_action_trans[a]]
+                    if poss_reward > best_reward:
+                        next_act_action = a
+                        best_reward = poss_reward
+            elif win_target == "C":
+                for a in act_actions:
+                    poss_reward = testdic['C'][current_pos][act_action_trans[a]]
+                    if poss_reward > best_reward:
+                        next_act_action = a
+                        best_reward = poss_reward
+            else:
+                for a in act_actions:
+                    poss_reward = testdic['D'][current_pos][act_action_trans[a]]
+                    if poss_reward > best_reward:
+                        next_act_action = a
+                        best_reward = poss_reward
+            return next_act_action
 
     def take_next_move(action):
         if action == "up":
@@ -111,7 +150,10 @@ def test_model(testdic, testseq):
     test_seq = testseq
     games = len(test_seq)
     game = 0
-    into_int_state = False
+    prev_scenario = test_seq[-1]
+
+    current_pos = win_obj_B
+    into_int_state = True
 
     while game < games:
         scenario = test_seq[game]
@@ -119,44 +161,36 @@ def test_model(testdic, testseq):
         go_to_int = check_to_int()
         if go_to_int:
             int_action = pick_int_move(prev_scenario)
-            # if int_action == "":
-            # todo: make it clear it got stuck here and end the game
             int_action_coord = int_action_trans[int_action]
             int_action_list.append((current_pos, int_action_coord))
             current_pos = take_next_move(int_action)
+            print("Testing model {}: new int position following scenario {} is {}".format(model,
+                                                                                          prev_scenario, current_pos))
             int_move_counter += 1
-            print("int move counter = {}".format(int_move_counter))
         else:
             into_int_state = False
-            while into_int_state:
-                int_lastpos = current_pos
-                int_dist_test = int_distance_calc(int_lastpos, win_pos)
-                int_dist_test_list.append(int_dist_test)
-                into_int_state = False
-            int_move_counter = 0
             if current_pos == win_pos:
                 moves_per_test.append(act_move_counter)
                 game_num_test.append(game + 1)
                 scenario_per_test.append(scenario)
+                print("Game over for scenario {}".format(scenario))
                 game += 1
                 act_move_counter = 0
+                int_move_counter = 0
                 int_action_list = []
                 act_action_list = []
                 into_int_state = True
                 prev_scenario = scenario
-                print("game over")
             else:
                 act_action = pick_act_move(scenario)
-                # if check_testact_loop(act_action, current_pos):
                 act_action_coord = act_action_trans[act_action]
                 act_action_list.append((current_pos, act_action_coord))
-                act_action_count(current_pos, act_action_coord, scenario)
                 current_pos = take_next_move(act_action)
-                print(current_pos)
+                print("Testing model {}: new action position targeting scenario {} is {}".format(model,
+                                                                                                 scenario, current_pos))
                 act_move_counter += 1
-                print(act_move_counter)
-                # todo: check if same square gets touched twice in testing, if so then end b/c endless loop
-        # int_action = pick_int_move(prev_scenario)
-        # int_action_coord = int_action_trans[int_action]
-        # int_action_list.append((current_pos, int_action_coord))
-        # int_action_count(current_pos, int_action_coord, prev_scenario)
+
+    info_return = {'test_moves': moves_per_test, 'games_test': game_num_test,
+                   'scen_test': scenario_per_test}
+    print("Model {} test: complete".format(model))
+    return info_return

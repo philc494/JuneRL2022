@@ -1,27 +1,28 @@
 import b_modelselector
 import z_statistics
+import a_tester
 from z_visualization import visualize_tables
-import pandas as pd
 from collections import defaultdict
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 I. Select parameters
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-train_pattern = "AB"
+train_pattern = "ABCD"
 test_pattern = train_pattern
-train_iterations = 250
-train_sets = 3
+train_iterations = 100
+train_sets = 100
+
 test_iterations = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 II. Select models to analyze:
 0: Orig backup
-1: 8 Q-tables: negative reward possible
-2: 8 Q-tablespos: game over at 50, no negative rewards
+1: 8 Q-tables: positive rewards, action-distribution
+2: 8 Q-tablespos: positive rewards, epsilon-greedy
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-model_list = [2]
 
+model_list = [1]
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 III. Run program
@@ -31,8 +32,8 @@ parameters = {'train_pattern': train_pattern, 'test_pattern': test_pattern, 'tra
               'test_iterations': test_iterations}
 
 (input(" ---Train/Test Settings--- \n "
-              "Training pattern: {}\n Iterations: {}\n Training sets: {}\n\n Testing pattern: {}\n Testing iterations: {}\n"
-                " Total testing games: {}\n  "
+              "Training pattern: {}\n Iterations: {}\n Training sets: {}\n\n Testing pattern: {}\n"
+       " Testing iterations: {}\n  "
               "---Press enter to continue--- ".format(train_pattern, train_iterations,
                                                             train_sets,
                                                            test_pattern, test_iterations, len(test_pattern) * test_iterations,
@@ -41,11 +42,13 @@ results = {}
 reward_results = {}
 stats = {}
 train_sets_done = 0
+test_sequence = test_pattern * test_iterations
 
 
 """ Generate multiple sets of training data for averaging"""
 for model in model_list:
     reward_results[model] = {}
+    train_sets_done = 0
     for x in range(0, train_sets):
         reward_results[model][x] = b_modelselector.model_selector(model, parameters)[0]
         print("Model {}, set {} completed".format(model, train_sets_done + 1))
@@ -60,14 +63,14 @@ act_list = []
 resultsfinal = defaultdict(dict)
 reward_tempdic = defaultdict(dict)
 
-for a in reward_results[2]:
+for a in reward_results[model]:
     set_list.append(a)
-for a in reward_results[2][0]:
+for a in reward_results[model][0]:
     table_list.append(a)
-for a in reward_results[2][0]['A']:
+for a in reward_results[model][0]['A']:
     pos_list.append(a)
-for a in reward_results[2][0]['A']:
-    for b in reward_results[2][0]['A'][a]:
+for a in reward_results[model][0]['A']:
+    for b in reward_results[model][0]['A'][a]:
         act_list.append(b)
 
 for a in model_list:
@@ -91,15 +94,17 @@ for a in model_list:
             for d in act_list:
                 resultsfinal[a][b][c][d] = round(sum(reward_tempdic[a][b][c][d].values()) / len(set_list), 2)
 
-print(reward_tempdic[2]['A'][(3, 3)][(-1, -1)])
-print(resultsfinal[2]['A'][(3, 3)][(-1, -1)])
+
+print(reward_tempdic[model]['A'][(1, 0)][(-1, 0)])
+print(resultsfinal[model]['A'][(1, 0)][(-1, 0)])
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Run statistics and visualizations based on this final averaged set for each model
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 for model in model_list:
-    # stats[resultsfinal[model]] = z_statistics.stats(model, resultsfinal[model])
+    test_results = a_tester.test_model(resultsfinal[model], test_sequence, model)
+    z_statistics.stats(model, test_results)
     visualize_tables(model, resultsfinal[model])
 
 
