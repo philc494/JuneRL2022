@@ -1,10 +1,9 @@
 import pandas as pd
 import numpy as np
 import os
-import seaborn as sns
 
 
-def stats(model, resultsdic):
+def stats(model, infodic, testseq, summary):
     # train_label = []
     # for a in resultsdic[model]['train_moves']:
     #     b = 'train'
@@ -25,16 +24,39 @@ def stats(model, resultsdic):
     # writer.save()
 
     test_label = []
-    for a in resultsdic['test_moves']:
+    test_seq = []
+    test_desc = []
+    train_iter = []
+    train_sets = []
+    seq_label = []
+    for a in infodic['test_moves']:
         b = 'test'
+        c = testseq
+        d = summary['description']
+        e = summary['trainiter']
+        f = summary['trainsets']
+        g = summary['sequence']
         test_label.append(b)
-    test_name = np.array(test_label)
-    test_moves = np.array(resultsdic['test_moves'])
-    test_gamenum = np.array(resultsdic['games_test'])
-    test_gamescen = np.array(resultsdic['scen_test'])
+        test_seq.append(c)
+        test_desc.append(d)
+        train_iter.append(e)
+        train_sets.append(f)
+        seq_label.append(g)
+
+    test_moves = np.array(infodic['test_moves'])
+    test_gamenum = np.array(infodic['games_test'])
+    test_gamescen = np.array(infodic['scen_test'])
+    test_dist = np.array(infodic['test_dist'])
+    description = np.array(test_desc)
+    test_pattern = np.array(test_seq)
+    sequence = np.array(seq_label)
     df_test = pd.DataFrame(
-        {'Game_num': test_gamenum, 'Moves': test_moves, 'Scenario': test_gamescen, 'Type': test_name})
-    df_test['MA100'] = df_test['Moves'].rolling(100).mean()
+        {'Game_num': test_gamenum, 'Scenario': test_gamescen, 'Model': description, 'Seq #': sequence,
+         'Pattern': test_pattern, 'TrainIter': train_iter,
+         'TrainSets': train_sets, 'Moves': test_moves, 'Distance': test_dist})
+    df_test['Avg Moves'] = df_test['Moves'].mean()
+
+    df_test['Avg Dist'] = df_test['Distance'].mean()
 
     directory = str(model)
     parent_dir = '/Users/philcrawford/PycharmProjects/JuneRL2022/results/test'

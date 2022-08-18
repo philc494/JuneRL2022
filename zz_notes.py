@@ -22,7 +22,9 @@ Done:
 
 - next steps:
     try sequences from paper
-    come up with decent measures for model performance - variance, distance, action moves
+    come up with decent measures for model performance - variance, distance, action moves, time taken
+       - finish distance in testing and other training model
+       
         
 
 """"""""""""""

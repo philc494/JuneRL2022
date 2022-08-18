@@ -15,9 +15,10 @@ def qtables_8(train_pattern, train_iterations):
     moves_per_train = []
     game_num_train = []
     scenario_per_train = []
+    dist_list = []
 
     into_int_state = False
-    test_state = False
+    dist_recorded = False
     int_move_counter = 4
     act_move_counter = 0
     game = 0
@@ -39,22 +40,6 @@ def qtables_8(train_pattern, train_iterations):
     rewards_B_int = {}
     rewards_C_int = {}
     rewards_D_int = {}
-    rewards_A_count = {}
-    rewards_B_count = {}
-    rewards_C_count = {}
-    rewards_D_count = {}
-    rewards_A_intcount = {}
-    rewards_B_intcount = {}
-    rewards_C_intcount = {}
-    rewards_D_intcount = {}
-    rewards_A_testcount = {}
-    rewards_B_testcount = {}
-    rewards_C_testcount = {}
-    rewards_D_testcount = {}
-    rewards_A_inttestcount = {}
-    rewards_B_inttestcount = {}
-    rewards_C_inttestcount = {}
-    rewards_D_inttestcount = {}
     blank = {}
     for i in range(board_rows):
         for j in range(board_cols):
@@ -66,22 +51,6 @@ def qtables_8(train_pattern, train_iterations):
             rewards_B_int[(i, j)] = 0
             rewards_C_int[(i, j)] = 0
             rewards_D_int[(i, j)] = 0
-            rewards_A_count[(i, j)] = 0
-            rewards_B_count[(i, j)] = 0
-            rewards_C_count[(i, j)] = 0
-            rewards_D_count[(i, j)] = 0
-            rewards_A_intcount[(i, j)] = 0
-            rewards_B_intcount[(i, j)] = 0
-            rewards_C_intcount[(i, j)] = 0
-            rewards_D_intcount[(i, j)] = 0
-            rewards_A_testcount[(i, j)] = 0
-            rewards_B_testcount[(i, j)] = 0
-            rewards_C_testcount[(i, j)] = 0
-            rewards_D_testcount[(i, j)] = 0
-            rewards_A_inttestcount[(i, j)] = 0
-            rewards_B_inttestcount[(i, j)] = 0
-            rewards_C_inttestcount[(i, j)] = 0
-            rewards_D_inttestcount[(i, j)] = 0
             blank[(i, j)] = 0
 
     for i in rewards_A:
@@ -101,38 +70,6 @@ def qtables_8(train_pattern, train_iterations):
                             (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
         rewards_D_int[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                             (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_A_count[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                            (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_B_count[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                            (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_C_count[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                            (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_D_count[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                            (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_A_intcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                            (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_B_intcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                                 (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_C_intcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                                 (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_D_intcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                                 (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_A_testcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                                  (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_B_testcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                                  (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_C_testcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                                  (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_D_testcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                                  (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_A_inttestcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                                     (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_B_inttestcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                                     (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_C_inttestcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                                     (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
-        rewards_D_inttestcount[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
-                                     (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
         blank[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                     (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
 
@@ -318,46 +255,6 @@ def qtables_8(train_pattern, train_iterations):
                 rewards_D_int[a][b] = round(
                     rewards_D_int[a][b] + alpha * (reward_apply - rewards_D_int[a][b]), 2)
 
-    def int_action_count(currpos, move, prevscenario):
-        if not test_state:
-            if prevscenario == "A":
-                rewards_A_intcount[currpos][move] += 1
-            if prevscenario == "B":
-                rewards_B_intcount[currpos][move] += 1
-            if prevscenario == "C":
-                rewards_C_intcount[currpos][move] += 1
-            if prevscenario == "D":
-                rewards_D_intcount[currpos][move] += 1
-        else:
-            if prevscenario == "A":
-                rewards_A_inttestcount[currpos][move] += 1
-            if prevscenario == "B":
-                rewards_B_inttestcount[currpos][move] += 1
-            if prevscenario == "C":
-                rewards_C_inttestcount[currpos][move] += 1
-            if prevscenario == "D":
-                rewards_D_inttestcount[currpos][move] += 1
-
-    def act_action_count(currpos, move, scenario):
-        if not test_state:
-            if scenario == "A":
-                rewards_A_count[currpos][move] += 1
-            if scenario == "B":
-                rewards_B_count[currpos][move] += 1
-            if scenario == "C":
-                rewards_C_count[currpos][move] += 1
-            if scenario == "D":
-                rewards_D_count[currpos][move] += 1
-        else:
-            if scenario == "A":
-                rewards_A_testcount[currpos][move] += 1
-            if scenario == "B":
-                rewards_B_testcount[currpos][move] += 1
-            if scenario == "C":
-                rewards_C_testcount[currpos][move] += 1
-            if scenario == "D":
-                rewards_D_testcount[currpos][move] += 1
-
     def check_to_int():
         if int_move_counter < 4 and into_int_state:
             return True
@@ -367,6 +264,17 @@ def qtables_8(train_pattern, train_iterations):
         seen = set()
         return [x for x in sequence if not (x in seen or seen.add(x))]
 
+    def dist_calc(currentpos, next_target):
+        if next_target == 'A':
+            dist = max(abs(currentpos[0] - win_obj_A[0]), abs(currentpos[1] - win_obj_A[1]))
+        elif next_target == 'B':
+            dist = max(abs(currentpos[0] - win_obj_B[0]), abs(currentpos[1] - win_obj_B[1]))
+        elif next_target == 'C':
+            dist = max(abs(currentpos[0] - win_obj_C[0]), abs(currentpos[1] - win_obj_C[1]))
+        else:
+            dist = max(abs(currentpos[0] - win_obj_D[0]), abs(currentpos[1] - win_obj_D[1]))
+        return dist
+
     while game < games:
         scenario = train_seq[game]
         win_pos = set_win_pos(scenario)
@@ -375,20 +283,18 @@ def qtables_8(train_pattern, train_iterations):
             int_action = pick_int_move(prev_scenario)
             int_action_coord = int_action_trans[int_action]
             int_action_list.append((current_pos, int_action_coord))
-            int_action_count(current_pos, int_action_coord, prev_scenario)
             current_pos = take_next_move(int_action)
             int_move_counter += 1
         else:
             into_int_state = False
+            if not dist_recorded:
+                int_distance = dist_calc(current_pos, scenario)
+                dist_list.append(int_distance)
+                dist_recorded = True
             if current_pos == win_pos:
                 reward = base_reward * (get_exp(-.25 * act_move_counter))
                 update_act_rewards(reward)
                 update_int_rewards(reward)
-                # if (game + 1) % (games / 2) == 0:
-                    # print("Model 2 training game {} of {} completed:  Act moves in last game: {}".format(
-                    #     game + 1,
-                    #     games,
-                    #     act_move_counter))
                 moves_per_train.append(act_move_counter)
                 game_num_train.append(game + 1)
                 scenario_per_train.append(scenario)
@@ -398,12 +304,12 @@ def qtables_8(train_pattern, train_iterations):
                 int_action_list = []
                 act_action_list = []
                 into_int_state = True
+                dist_recorded = False
                 prev_scenario = scenario
             else:
                 act_action = pick_act_move(scenario)
                 act_action_coord = act_action_trans[act_action]
                 act_action_list.append((current_pos, act_action_coord))
-                act_action_count(current_pos, act_action_coord, scenario)
                 current_pos = take_next_move(act_action)
                 act_move_counter += 1
 
@@ -412,7 +318,6 @@ def qtables_8(train_pattern, train_iterations):
             'Dint': rewards_D_int}
     info_return = {'train_moves': moves_per_train, 'games_train': game_num_train,
             'scen_train': scenario_per_train}
-
     return rewards_return, info_return, {'A': rewards_A, 'B': rewards_B, 'C': rewards_C, 'D': rewards_D, 'Aint': rewards_A_int,
             'Bint': rewards_B_int, 'Cint': rewards_C_int,
             'Dint': rewards_D_int, 'train_moves': moves_per_train, 'games_train': game_num_train,

@@ -6,27 +6,82 @@ from collections import defaultdict
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-I. Select parameters
+Sequences:
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-train_pattern = "ABCD"
-test_pattern = train_pattern
-train_iterations = 100
-train_sets = 100
 
+seq1 = 'DBCBABABDACBADACACBDACACADBDCDBDACADBCBDADBCDCBC'  # G = .25
+seq2 = 'ABCACABABACDCDABDBDBDCABDCDBDCDCABCDBACDBACACDBA'  # G = .40
+seq3 = 'BADCDCBDABCBABADCDCBCBCBACBADADADCDABADADCBCBCDA'  # G = .44
+seq4 = 'DBCDBACACACACDBDBDBACACACDBCDBACACDABABDBDBACDBD'  # G = .55
+seq5 = 'DCDCDCBADCBADCBADCBADCBACBADCBACBABADCBABADCDBAD'  # G = .68
+seq6 = 'CBCBDACBDADACBCBCBDACBDACBCBDACBDADACBDADADADACB'  # G = .76
+seq7 = 'BCADADADBCADBCADBCADBCADBCBCBCBCADADBCADBCADBCAD'  # G = .79
+seq8 = 'BCDABCDABCBCDABCDABCDABCDABCDADABCDABCDABCDABCDA'  # G = .89
+seq9 = 'BACDBACDBACDBACDBACDBACDBACDBACDBACDBACDBACDBACD'  # G = 1.0
+seq10 = 'ABDCABDCABDCABDCABDCABDCABDCABDCABDCABDCABDCABDC'  # G = 1.0
+seq11 = 'DCBADCBADCBADCBADCBADCBADCBADCBADCBADCBADCBADCBA'  # G = 1.0
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Models:
+1: action-distribution, positive rewards
+2: epsilon-greedy, positive rewards
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Select training criteria, models, and desired reports
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+train_pattern = seq3
+train_iterations = 100
+train_sets = 20
+
+model_list = [1, 2]
+
+statistics = True
+visualizations = True
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Run program
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+summaryinfo = {}
+test_pattern = train_pattern
 test_iterations = 1
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-II. Select models to analyze:
-0: Orig backup
-1: 8 Q-tables: positive rewards, action-distribution
-2: 8 Q-tablespos: positive rewards, epsilon-greedy
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+for a in model_list:
+    summaryinfo[a] = {}
+    summaryinfo[a]['trainiter'] = train_iterations
+    summaryinfo[a]['trainsets'] = train_sets
+    if test_pattern == seq1:
+        summaryinfo[a]['sequence'] = 'Seq1'
+    if test_pattern == seq2:
+        summaryinfo[a]['sequence'] = 'Seq2'
+    if test_pattern == seq3:
+        summaryinfo[a]['sequence'] = 'Seq3'
+    if test_pattern == seq4:
+        summaryinfo[a]['sequence'] = 'Seq4'
+    if test_pattern == seq5:
+        summaryinfo[a]['sequence'] = 'Seq5'
+    if test_pattern == seq6:
+        summaryinfo[a]['sequence'] = 'Seq6'
+    if test_pattern == seq7:
+        summaryinfo[a]['sequence'] = 'Seq7'
+    if test_pattern == seq8:
+        summaryinfo[a]['sequence'] = 'Seq8'
+    if test_pattern == seq9:
+        summaryinfo[a]['sequence'] = 'Seq9'
+    if test_pattern == seq10:
+        summaryinfo[a]['sequence'] = 'Seq10'
+    if test_pattern == seq11:
+        summaryinfo[a]['sequence'] = 'Seq11'
 
-model_list = [1]
+    if a == 1:
+        summaryinfo[1]['description'] = '1: action-distribution, positive rewards'
+    if a == 2:
+        summaryinfo[2]['description'] = '2: epsilon-greedy, positive rewards'
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-III. Run program
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 parameters = {'train_pattern': train_pattern, 'test_pattern': test_pattern, 'train_iterations': train_iterations,
               'test_iterations': test_iterations}
@@ -104,24 +159,16 @@ Run statistics and visualizations based on this final averaged set for each mode
 
 for model in model_list:
     test_results = a_tester.test_model(resultsfinal[model], test_sequence, model)
-    z_statistics.stats(model, test_results)
-    visualize_tables(model, resultsfinal[model])
-
-
+    if statistics:
+        z_statistics.stats(model, test_results, test_sequence, summaryinfo[model])
+    if visualizations:
+        visualize_tables(model, resultsfinal[model])
 
 
 """""""""
 Statistics/visualization to add:
-- plotting DFs from different models in same file for comparison
-- plotting epochs/etc from different models in same graph for comparison
-- plot all the parameters used to avoid confusion of which model was run
+- making a summary excel to compare models
 other stats:
-- time to run
+- variance of Q values across sets
 - % of time int state leads directly to target
-- test: average moves per game 
-- train/test: ratio of avg test game length to avg train game length
-- test: average distance after int state to next target
-- test: average distance from middle after int state
-- test: average times per game wrong corner touched before right corner
-- 
-"""
+"""""""""

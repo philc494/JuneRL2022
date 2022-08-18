@@ -14,12 +14,13 @@ def test_model(testdic, testseq, model):
     win_obj_D = (4, 4)
     start_pos = (2, 2)
 
-
+    dist_recorded = False
     int_action_list = []
     act_action_list = []
     moves_per_test = []
     game_num_test = []
     scenario_per_test = []
+    test_dist_list = []
 
     act_actions = [
         "up",
@@ -147,6 +148,17 @@ def test_model(testdic, testseq, model):
                 return next_pos
         return current_pos
 
+    def dist_calc(currentpos, next_target):
+        if next_target == 'A':
+            dist = max(abs(currentpos[0] - win_obj_A[0]), abs(currentpos[1] - win_obj_A[1]))
+        elif next_target == 'B':
+            dist = max(abs(currentpos[0] - win_obj_B[0]), abs(currentpos[1] - win_obj_B[1]))
+        elif next_target == 'C':
+            dist = max(abs(currentpos[0] - win_obj_C[0]), abs(currentpos[1] - win_obj_C[1]))
+        else:
+            dist = max(abs(currentpos[0] - win_obj_D[0]), abs(currentpos[1] - win_obj_D[1]))
+        return dist
+
     test_seq = testseq
     games = len(test_seq)
     game = 0
@@ -169,6 +181,10 @@ def test_model(testdic, testseq, model):
             int_move_counter += 1
         else:
             into_int_state = False
+            if not dist_recorded:
+                int_distance = dist_calc(current_pos, scenario)
+                test_dist_list.append(int_distance)
+                dist_recorded = True
             if current_pos == win_pos:
                 moves_per_test.append(act_move_counter)
                 game_num_test.append(game + 1)
@@ -180,6 +196,7 @@ def test_model(testdic, testseq, model):
                 int_action_list = []
                 act_action_list = []
                 into_int_state = True
+                dist_recorded = False
                 prev_scenario = scenario
             else:
                 act_action = pick_act_move(scenario)
@@ -191,6 +208,6 @@ def test_model(testdic, testseq, model):
                 act_move_counter += 1
 
     info_return = {'test_moves': moves_per_test, 'games_test': game_num_test,
-                   'scen_test': scenario_per_test}
+                   'scen_test': scenario_per_test, 'test_dist': test_dist_list}
     print("Model {} test: complete".format(model))
     return info_return
