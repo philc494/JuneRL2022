@@ -73,6 +73,10 @@ def qtables_8(train_pattern, train_iterations):
         blank[i] = {(-1, 0): 0, (1, 0): 0, (0, -1): 0, (0, 1): 0,
                     (-1, -1): 0, (-1, 1): 0, (1, -1): 0, (1, 1): 0, (0, 0): 0}
 
+        pos_list = [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (1, 0), (1, 1), (1, 2), (1, 3), (1, 4),
+                    (2, 0), (2, 1), (2, 2), (2, 3), (2, 4), (3, 0), (3, 1), (3, 2), (3, 3), (3, 4),
+                    (4, 0), (4, 1), (4, 2), (4, 3), (4, 4)]
+
 
     act_actions = [
         "up",
@@ -99,6 +103,87 @@ def qtables_8(train_pattern, train_iterations):
         0, 1), "uleft": (-1, -1), "uright": (-1, 1), "dleft": (1, -1), "dright": (1, 1), "stay": (0, 0)}
     int_action_trans = {"up": (-1, 0), "down": (1, 0), "left": (0, -1), "right": (
         0, 1), "uleft": (-1, -1), "uright": (-1, 1), "dleft": (1, -1), "dright": (1, 1), "stay": (0, 0)}
+
+    for i in pos_list:
+        rewards_A[i][act_action_trans['up']] = .01
+        rewards_A[i][act_action_trans['down']] = .01
+        rewards_A[i][act_action_trans['left']] = .01
+        rewards_A[i][act_action_trans['right']] = .01
+        rewards_A[i][act_action_trans['uleft']] = .01
+        rewards_A[i][act_action_trans['uright']] = .01
+        rewards_A[i][act_action_trans['dleft']] = .01
+        rewards_A[i][act_action_trans['dright']] = .01
+        rewards_A[i][act_action_trans['stay']] = .01
+
+        rewards_B[i][act_action_trans['up']] = .01
+        rewards_B[i][act_action_trans['down']] = .01
+        rewards_B[i][act_action_trans['left']] = .01
+        rewards_B[i][act_action_trans['right']] = .01
+        rewards_B[i][act_action_trans['uleft']] = .01
+        rewards_B[i][act_action_trans['uright']] = .01
+        rewards_B[i][act_action_trans['dleft']] = .01
+        rewards_B[i][act_action_trans['dright']] = .01
+        rewards_B[i][act_action_trans['stay']] = .01
+
+        rewards_C[i][act_action_trans['up']] = .01
+        rewards_C[i][act_action_trans['down']] = .01
+        rewards_C[i][act_action_trans['left']] = .01
+        rewards_C[i][act_action_trans['right']] = .01
+        rewards_C[i][act_action_trans['uleft']] = .01
+        rewards_C[i][act_action_trans['uright']] = .01
+        rewards_C[i][act_action_trans['dleft']] = .01
+        rewards_C[i][act_action_trans['dright']] = .01
+        rewards_C[i][act_action_trans['stay']] = .01
+
+        rewards_D[i][act_action_trans['up']] = .01
+        rewards_D[i][act_action_trans['down']] = .01
+        rewards_D[i][act_action_trans['left']] = .01
+        rewards_D[i][act_action_trans['right']] = .01
+        rewards_D[i][act_action_trans['uleft']] = .01
+        rewards_D[i][act_action_trans['uright']] = .01
+        rewards_D[i][act_action_trans['dleft']] = .01
+        rewards_D[i][act_action_trans['dright']] = .01
+        rewards_D[i][act_action_trans['stay']] = .01
+
+        rewards_A_int[i][act_action_trans['up']] = .01
+        rewards_A_int[i][act_action_trans['down']] = .01
+        rewards_A_int[i][act_action_trans['left']] = .01
+        rewards_A_int[i][act_action_trans['right']] = .01
+        rewards_A_int[i][act_action_trans['uleft']] = .01
+        rewards_A_int[i][act_action_trans['uright']] = .01
+        rewards_A_int[i][act_action_trans['dleft']] = .01
+        rewards_A_int[i][act_action_trans['dright']] = .01
+        rewards_A_int[i][act_action_trans['stay']] = .01
+
+        rewards_B_int[i][act_action_trans['up']] = .01
+        rewards_B_int[i][act_action_trans['down']] = .01
+        rewards_B_int[i][act_action_trans['left']] = .01
+        rewards_B_int[i][act_action_trans['right']] = .01
+        rewards_B_int[i][act_action_trans['uleft']] = .01
+        rewards_B_int[i][act_action_trans['uright']] = .01
+        rewards_B_int[i][act_action_trans['dleft']] = .01
+        rewards_B_int[i][act_action_trans['dright']] = .01
+        rewards_B_int[i][act_action_trans['stay']] = .01
+
+        rewards_C_int[i][act_action_trans['up']] = .01
+        rewards_C_int[i][act_action_trans['down']] = .01
+        rewards_C_int[i][act_action_trans['left']] = .01
+        rewards_C_int[i][act_action_trans['right']] = .01
+        rewards_C_int[i][act_action_trans['uleft']] = .01
+        rewards_C_int[i][act_action_trans['uright']] = .01
+        rewards_C_int[i][act_action_trans['dleft']] = .01
+        rewards_C_int[i][act_action_trans['dright']] = .01
+        rewards_C_int[i][act_action_trans['stay']] = .01
+
+        rewards_D_int[i][act_action_trans['up']] = .01
+        rewards_D_int[i][act_action_trans['down']] = .01
+        rewards_D_int[i][act_action_trans['left']] = .01
+        rewards_D_int[i][act_action_trans['right']] = .01
+        rewards_D_int[i][act_action_trans['uleft']] = .01
+        rewards_D_int[i][act_action_trans['uright']] = .01
+        rewards_D_int[i][act_action_trans['dleft']] = .01
+        rewards_D_int[i][act_action_trans['dright']] = .01
+        rewards_D_int[i][act_action_trans['stay']] = .01
 
     def get_exp(n):
         return e ** n
@@ -154,13 +239,9 @@ def qtables_8(train_pattern, train_iterations):
                 act_rewards.extend([up_reward, down_reward, left_reward, right_reward,
                                     uleft_reward, uright_reward, dleft_reward, dright_reward,
                                     stay_reward])
-                total_reward = sum(act_rewards)
-                if total_reward == 0:
-                    next_act_action = random.choice(act_actions)
-                else:
-                    next_act_action = random.choices(act_actions, weights=(up_reward ** 2, down_reward ** 2,
-                                left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
-                                dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
+                next_act_action = random.choices(act_actions, weights=(up_reward ** 2, down_reward ** 2,
+                            left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
+                            dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
 
             elif win_target == "B":
                 up_reward = rewards_B[current_pos][act_action_trans['up']]
@@ -175,13 +256,9 @@ def qtables_8(train_pattern, train_iterations):
                 act_rewards.extend([up_reward, down_reward, left_reward, right_reward,
                                     uleft_reward, uright_reward, dleft_reward, dright_reward,
                                     stay_reward])
-                total_reward = sum(act_rewards)
-                if total_reward == 0:
-                    next_act_action = random.choice(act_actions)
-                else:
-                    next_act_action = random.choices(act_actions, weights=(up_reward ** 2, down_reward ** 2,
-                                left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
-                                dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
+                next_act_action = random.choices(act_actions, weights=(up_reward ** 2, down_reward ** 2,
+                            left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
+                            dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
             elif win_target == "C":
                 up_reward = rewards_C[current_pos][act_action_trans['up']]
                 down_reward = rewards_C[current_pos][act_action_trans['down']]
@@ -195,13 +272,9 @@ def qtables_8(train_pattern, train_iterations):
                 act_rewards.extend([up_reward, down_reward, left_reward, right_reward,
                                     uleft_reward, uright_reward, dleft_reward, dright_reward,
                                     stay_reward])
-                total_reward = sum(act_rewards)
-                if total_reward == 0:
-                    next_act_action = random.choice(act_actions)
-                else:
-                    next_act_action = random.choices(act_actions, weights=(up_reward ** 2, down_reward ** 2,
-                                left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
-                                dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
+                next_act_action = random.choices(act_actions, weights=(up_reward ** 2, down_reward ** 2,
+                            left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
+                            dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
             else:
                 up_reward = rewards_D[current_pos][act_action_trans['up']]
                 down_reward = rewards_D[current_pos][act_action_trans['down']]
@@ -215,13 +288,9 @@ def qtables_8(train_pattern, train_iterations):
                 act_rewards.extend([up_reward, down_reward, left_reward, right_reward,
                                     uleft_reward, uright_reward, dleft_reward, dright_reward,
                                     stay_reward])
-                total_reward = sum(act_rewards)
-                if total_reward == 0:
-                    next_act_action = random.choice(act_actions)
-                else:
-                    next_act_action = random.choices(act_actions, weights=(up_reward ** 2, down_reward ** 2,
-                                left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
-                                dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
+                next_act_action = random.choices(act_actions, weights=(up_reward ** 2, down_reward ** 2,
+                            left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
+                            dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
             new_position = take_next_move(next_act_action)
             if new_position == current_pos and next_act_action != "stay":
                 continue
@@ -244,13 +313,9 @@ def qtables_8(train_pattern, train_iterations):
                 int_rewards.extend([up_reward, down_reward, left_reward, right_reward,
                                        uleft_reward, uright_reward, dleft_reward, dright_reward,
                                        stay_reward])
-                total_reward = sum(int_rewards)
-                if total_reward == 0:
-                    next_int_action = random.choice(act_actions)
-                else:
-                    next_int_action = random.choices(int_actions, weights=(up_reward ** 2, down_reward ** 2,
-                                left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
-                                dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
+                next_int_action = random.choices(int_actions, weights=(up_reward ** 2, down_reward ** 2,
+                            left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
+                            dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
             elif prev_target == "B":
                 up_reward = rewards_B_int[current_pos][act_action_trans['up']]
                 down_reward = rewards_B_int[current_pos][act_action_trans['down']]
@@ -264,13 +329,9 @@ def qtables_8(train_pattern, train_iterations):
                 int_rewards.extend([up_reward, down_reward, left_reward, right_reward,
                                     uleft_reward, uright_reward, dleft_reward, dright_reward,
                                     stay_reward])
-                total_reward = sum(int_rewards)
-                if total_reward == 0:
-                    next_int_action = random.choice(act_actions)
-                else:
-                    next_int_action = random.choices(int_actions, weights=(up_reward ** 2, down_reward ** 2,
-                                left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
-                                dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
+                next_int_action = random.choices(int_actions, weights=(up_reward ** 2, down_reward ** 2,
+                            left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
+                            dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
             elif prev_target == "C":
                 up_reward = rewards_C_int[current_pos][act_action_trans['up']]
                 down_reward = rewards_C_int[current_pos][act_action_trans['down']]
@@ -284,13 +345,9 @@ def qtables_8(train_pattern, train_iterations):
                 int_rewards.extend([up_reward, down_reward, left_reward, right_reward,
                                     uleft_reward, uright_reward, dleft_reward, dright_reward,
                                     stay_reward])
-                total_reward = sum(int_rewards)
-                if total_reward == 0:
-                    next_int_action = random.choice(act_actions)
-                else:
-                    next_int_action = random.choices(int_actions, weights=(up_reward ** 2, down_reward ** 2,
-                                left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
-                                dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
+                next_int_action = random.choices(int_actions, weights=(up_reward ** 2, down_reward ** 2,
+                            left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
+                            dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
             else:
                 up_reward = rewards_D_int[current_pos][act_action_trans['up']]
                 down_reward = rewards_D_int[current_pos][act_action_trans['down']]
@@ -304,13 +361,9 @@ def qtables_8(train_pattern, train_iterations):
                 int_rewards.extend([up_reward, down_reward, left_reward, right_reward,
                                     uleft_reward, uright_reward, dleft_reward, dright_reward,
                                     stay_reward])
-                total_reward = sum(int_rewards)
-                if total_reward == 0:
-                    next_int_action = random.choice(act_actions)
-                else:
-                    next_int_action = random.choices(int_actions, weights=(up_reward ** 2, down_reward ** 2,
-                                left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
-                                dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
+                next_int_action = random.choices(int_actions, weights=(up_reward ** 2, down_reward ** 2,
+                            left_reward ** 2, right_reward ** 2, uleft_reward ** 2, uright_reward ** 2,
+                            dleft_reward ** 2, dright_reward ** 2, stay_reward ** 2), k=1)[0]
             new_position = take_next_move(next_int_action)
             if new_position == current_pos and next_int_action != "stay":
                 continue
@@ -396,7 +449,7 @@ def qtables_8(train_pattern, train_iterations):
                 dist_list.append(int_distance)
                 dist_recorded = True
             if current_pos == win_pos:
-                reward = base_reward * (get_exp(-.25 * act_move_counter))
+                reward = base_reward * (get_exp(-.75 * act_move_counter))
                 update_act_rewards(reward)
                 update_int_rewards(reward)
                 moves_per_train.append(act_move_counter)

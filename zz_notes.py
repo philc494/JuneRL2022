@@ -1,4 +1,71 @@
 """
+Aug26:
+Done:
+    - change Main to include assigning parameters across all models to be used in train and test 
+            (and mentioning in Test results xls what was used)
+    - in testing model: if model =1, then use this; if model = 2, then use this
+- make transition probabilities based on 1000 test count:
+        - record in each of 1000 tests where int state ends up
+        - calculate/return probabilities
+- make a new transition matrix XLS for each model
+
+todo:
+- make it so int state starts in center, not from very last trial
+    - make visualization - train and visualization - test (so one can turn off separately)
+- make transition probabilities based on 1000 test count:
+        - make a visualization of the area it went to (add +1 to entire region every time it went there)
+            (cross arm up = purple, this one = blue)
+        
+        
+
+
+
+
+- Run models exactly as it operates -- "% of time ends up in quadrant A, B, C, D" to evaluate how often it "guesses"
+right (A = 2x2 topleft; middle center exactly special) - then "middle lines"
+   (count all 1000 trials)
+- interesting parameters
+   - learning rate
+   - reward functions
+   - action picking functions
+
+paper:
+   - "evaluating fundamentals of reinforcement learning" 
+   - "this model can't handle X property of sequences" 
+    - think about how changing parameters might change model behavior
+        - identify "core problems" and how changing parameters don't address this issue
+        - values spanning large range of a parameter (reward highly -, 0, +) --> some optimum 'sweet spot' point
+            - demonstrate making arguments
+        - "will it be able to do do X thing?"
+   - "here are other versions of models - these could work, this likely wouldn't" "background knowledge"
+   - don't leave open logical gaps
+   
+   Not as interesting once sufficient
+   - train/test sets & games --> just pick large enough (interested in long run converge)
+   - 
+
+
+
+
+
+Aug18:
+- initialize all as .01 in prob dist
+   - so many zeroes
+   
+- 4x4 transition matrix to evaluate scenarios
+
+
+
+
+- changing reward function and action choice exponents etc.
+- staying = bonus
+
+
+- probability to add new Q-table
+  - 
+
+
+
 Questions:
   - reward function - email question and decreasing with step time exponentially, max steps?
   -

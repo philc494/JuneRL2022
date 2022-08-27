@@ -4,25 +4,6 @@ import os
 
 
 def stats(model, infodic, testseq, summary):
-    # train_label = []
-    # for a in resultsdic[model]['train_moves']:
-    #     b = 'train'
-    #     train_label.append(b)
-    # train_name = np.array(train_label)
-    # train_moves = np.array(resultsdic[model]['train_moves'])
-    # train_gamenum = np.array(resultsdic[model]['games_train'])
-    # train_gamescen = np.array(resultsdic[model]['scen_train'])
-    # df_train = pd.DataFrame({'Game_num': train_gamenum, 'Moves': train_moves, 'Scenario': train_gamescen, 'Type': train_name})
-    # df_train['MA100'] = df_train['Moves'].rolling(100).mean()
-    #
-    # directory = str(model)
-    # parent_dir = '/Users/philcrawford/PycharmProjects/JuneRL2022/results'
-    # path = os.path.join(parent_dir, directory)
-    #
-    # writer = pd.ExcelWriter(path + '/' + str(model) + '_train_stats.xlsx', engine='xlsxwriter')
-    # df_train.to_excel(writer, sheet_name='summary_train')
-    # writer.save()
-
     test_label = []
     test_seq = []
     test_desc = []

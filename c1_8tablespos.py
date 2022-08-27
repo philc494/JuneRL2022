@@ -292,7 +292,7 @@ def qtables_8(train_pattern, train_iterations):
                 dist_list.append(int_distance)
                 dist_recorded = True
             if current_pos == win_pos:
-                reward = base_reward * (get_exp(-.25 * act_move_counter))
+                reward = base_reward * (get_exp(-.75 * act_move_counter))
                 update_act_rewards(reward)
                 update_int_rewards(reward)
                 moves_per_train.append(act_move_counter)
