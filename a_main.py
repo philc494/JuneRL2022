@@ -33,19 +33,19 @@ Models:
 Select training criteria, models, and desired reports
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-train_pattern = "ABCADBCA"
-train_iterations = 1000
-train_sets = 5
-test_iterations = 10
+train_pattern = "ABCD"
+train_iterations = 10000
+train_sets = 100
+test_iterations = 100
 
 # Parameters to be used, if applicable for given model(s)
 alpha = 0.2
 exploration_rate = 0.2
 
-model_list = [1, 2]
+model_list = [1]
 
 statistics = True
-visualizations = False
+visualizations = True
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Run program

@@ -457,7 +457,7 @@ def test_model(testdic, testseq, model, parameters):
                 Cleft_trans += 1
             else:
                 Cright_trans += 1
-        else:
+        elif prevscen == 'D':
             if finalintpos in A_squares:
                 DA_trans += 1
             elif finalintpos in B_squares:
@@ -476,19 +476,14 @@ def test_model(testdic, testseq, model, parameters):
                 Dleft_trans += 1
             else:
                 Dright_trans += 1
+        else:
+            return
 
     test_seq = testseq
     games = len(test_seq)
     game = 0
-    prev_scenario = test_seq[-1]
-    if prev_scenario == "A":
-        current_pos = win_obj_A
-    elif prev_scenario == "B":
-        current_pos = win_obj_B
-    elif prev_scenario == "C":
-        current_pos = win_obj_C
-    else:
-        current_pos = win_obj_D
+    current_pos = (2, 2)
+    prev_scenario = "X"
     into_int_state = True
 
     while game < games:
@@ -500,8 +495,8 @@ def test_model(testdic, testseq, model, parameters):
             int_action_coord = int_action_trans[int_action]
             int_action_list.append((current_pos, int_action_coord))
             current_pos = take_next_move(int_action)
-            print("Testing model {}: new int position following scenario {} is {}".format(model,
-                                                                                          prev_scenario, current_pos))
+            # print("Testing model {}: new int position following scenario {} is {}".format(model,
+            #                                                                               prev_scenario, current_pos))
             int_move_counter += 1
         else:
             into_int_state = False
@@ -515,7 +510,7 @@ def test_model(testdic, testseq, model, parameters):
                 moves_per_test.append(act_move_counter)
                 game_num_test.append(game + 1)
                 scenario_per_test.append(scenario)
-                print("Game over for scenario {}".format(scenario))
+                # print("Game over for scenario {}".format(scenario))
                 game += 1
                 act_move_counter = 0
                 int_move_counter = 0
@@ -529,8 +524,8 @@ def test_model(testdic, testseq, model, parameters):
                 act_action_coord = act_action_trans[act_action]
                 act_action_list.append((current_pos, act_action_coord))
                 current_pos = take_next_move(act_action)
-                print("Testing model {}: new action position targeting scenario {} is {}".format(model,
-                                                                                                 scenario, current_pos))
+                # print("Testing model {}: new action position targeting scenario {} is {}".format(model,
+                #                                                                                  scenario, current_pos))
                 act_move_counter += 1
 
     def calc_prob(xxprob, xx1, xx2, xx3, xx4, xx5, xx6, xx7, xx8, xx9):
@@ -669,10 +664,9 @@ def test_model(testdic, testseq, model, parameters):
                       'Clefttp': Cleft_tp, 'Crighttp': Cright_tp,
                       'DAtrans': DA_trans, 'DBtrans': DB_trans, 'DCtrans': DC_trans, 'DDtrans': DD_trans,
                       'Dmidtrans': Dmid_trans, 'Dlefttrans': Dleft_trans, 'Drighttrans': Dright_trans,
-                      'Duptrans': Dup_trans, 'Ddowntrans': Ddown_trans, 'DAtp': DD_tp, 'DBtp': DB_tp, 'DCtp': DC_tp,
+                      'Duptrans': Dup_trans, 'Ddowntrans': Ddown_trans, 'DAtp': DA_tp, 'DBtp': DB_tp, 'DCtp': DC_tp,
                       'DDtp': DD_tp, 'Dmidtp': Dmid_tp,
                       'Duptp': Dup_tp, 'Ddowntp': Ddown_tp,
                       'Dlefttp': Dleft_tp, 'Drighttp': Dright_tp}
     print("Model {} test: complete".format(model))
-
     return info_return

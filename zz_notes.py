@@ -8,9 +8,10 @@ Done:
         - record in each of 1000 tests where int state ends up
         - calculate/return probabilities
 - make a new transition matrix XLS for each model
+- make it so int state starts in center, not from very last trial
 
 todo:
-- make it so int state starts in center, not from very last trial
+
     - make visualization - train and visualization - test (so one can turn off separately)
 - make transition probabilities based on 1000 test count:
         - make a visualization of the area it went to (add +1 to entire region every time it went there)

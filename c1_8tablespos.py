@@ -17,9 +17,7 @@ def qtables_8(train_pattern, train_iterations):
     scenario_per_train = []
     dist_list = []
 
-    into_int_state = False
-    dist_recorded = False
-    int_move_counter = 4
+    int_move_counter = 0
     act_move_counter = 0
     game = 0
     start_pos = (2, 2)
@@ -274,6 +272,10 @@ def qtables_8(train_pattern, train_iterations):
         else:
             dist = max(abs(currentpos[0] - win_obj_D[0]), abs(currentpos[1] - win_obj_D[1]))
         return dist
+
+    prev_scenario = 'X'
+    into_int_state = False
+    dist_recorded = False
 
     while game < games:
         scenario = train_seq[game]
