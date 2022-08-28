@@ -32,20 +32,22 @@ Models:
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Select training criteria, models, and desired reports
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+# Models to analyze
+model_list = [2]
 
+# Patterns to analyze
 train_pattern = "ABCD"
-train_iterations = 10000
+train_iterations = 1000
 train_sets = 100
-test_iterations = 100
+test_iterations = 1000
 
 # Parameters to be used, if applicable for given model(s)
 alpha = 0.2
 exploration_rate = 0.2
-
-model_list = [1]
+exp_val = -.75
 
 statistics = True
-visualizations = True
+train_visualizations = True
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Run program
@@ -208,7 +210,7 @@ for a in model_list:
         summaryinfo[2]['description'] = '2: epsilon-greedy, positive rewards'
 
 parameters = {'train_pattern': train_pattern, 'test_pattern': test_pattern, 'train_iterations': train_iterations,
-              'test_iterations': test_iterations, "alpha": alpha, "exp_rate": exploration_rate}
+              'test_iterations': test_iterations, "alpha": alpha, "exp_rate": exploration_rate, "ExpVal": exp_val}
 
 (input(" ---Train/Test Settings--- \n "
        "Pattern: {}\n Training iterations: {}\n Training sets: {}\n Test iterations: {}\n"
@@ -277,7 +279,7 @@ for model in model_list:
     test_results = a_tester.test_model(resultsfinal[model], test_sequence, model, parameters)
     if statistics:
         z_statistics.stats(model, test_results, test_sequence, summaryinfo[model])
-    if visualizations:
+    if train_visualizations:
         visualize_tables(model, resultsfinal[model])
     AA_count = test_results['AAtrans']
     AB_count = test_results['ABtrans']

@@ -2,9 +2,10 @@ import numpy as np
 import random
 import collections.abc
 from math import e
+import sympy as sy
 
 
-def qtables_8(train_pattern, train_iterations):
+def qtables_8(train_pattern, train_iterations, expval):
     base_reward = 100
     exp_rate = 0.2
     alpha = 0.2
@@ -99,6 +100,7 @@ def qtables_8(train_pattern, train_iterations):
 
     def get_exp(n):
         return e ** n
+
 
     def set_win_pos(letter):
         if letter == "A":
@@ -273,6 +275,7 @@ def qtables_8(train_pattern, train_iterations):
             dist = max(abs(currentpos[0] - win_obj_D[0]), abs(currentpos[1] - win_obj_D[1]))
         return dist
 
+
     prev_scenario = 'X'
     into_int_state = False
     dist_recorded = False
@@ -294,7 +297,7 @@ def qtables_8(train_pattern, train_iterations):
                 dist_list.append(int_distance)
                 dist_recorded = True
             if current_pos == win_pos:
-                reward = base_reward * (get_exp(-.75 * act_move_counter))
+                reward = base_reward * (get_exp(expval * act_move_counter))
                 update_act_rewards(reward)
                 update_int_rewards(reward)
                 moves_per_train.append(act_move_counter)

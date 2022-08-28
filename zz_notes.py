@@ -9,13 +9,15 @@ Done:
         - calculate/return probabilities
 - make a new transition matrix XLS for each model
 - make it so int state starts in center, not from very last trial
+- made expval selectable
 
 todo:
 
-    - make visualization - train and visualization - test (so one can turn off separately)
 - make transition probabilities based on 1000 test count:
         - make a visualization of the area it went to (add +1 to entire region every time it went there)
             (cross arm up = purple, this one = blue)
+- make visualization - train and visualization - test (so one can turn off separately)
+
         
         
 
