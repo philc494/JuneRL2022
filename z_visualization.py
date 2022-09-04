@@ -9,7 +9,7 @@ def minisquare_values(reward_dic, board_pos):
     mini_dic = {}
     for i in range(-1, 2):
         for j in range(-1, 2):
-            mini_dic[(i, j)] = round((reward_dic[board_pos][(i, j)]), 4) #
+            mini_dic[(i, j)] = round((reward_dic[board_pos][(i, j)]), 4)
     return mini_dic
 
 
@@ -23,7 +23,7 @@ def visualize_tables(model, resultsdic):
                        "intC": [resultsdic["Cint"], "CCint_rewards", "CCint"],
                        "intD": [resultsdic["Dint"], "DDint_rewards", "DDint"]}
 
-
+    print(resultsdic)
     for a in reward_info_out:
         dic_value_list = []
         for b in reward_info_out[a][0]:
@@ -423,7 +423,7 @@ def visualize_tables(model, resultsdic):
             im = ax.imshow(np.random.random((16, 16)), cmap='vlag',
                            vmin=min_val, vmax=max_val)
         cb_ax = fig.add_axes([.91, .3, .03, .4])
-        cbar = fig.colorbar(im, cax=cb_ax)
+        cb_ax = fig.colorbar(im, cax=cb_ax)
         # cbar.set_ticks([])
 
         ax = plt.subplot(5, 5, 1)

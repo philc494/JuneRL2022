@@ -2,6 +2,7 @@ import b_modelselector
 import z_statistics
 import a_tester
 from z_visualization import visualize_tables
+from z_testvisualization import visualize_testtables
 from collections import defaultdict
 import pandas as pd
 import os
@@ -36,9 +37,9 @@ Select training criteria, models, and desired reports
 model_list = [2]
 
 # Patterns to analyze
-train_pattern = "ABCD"
+train_pattern = 'ABACABAC'
 train_iterations = 1000
-train_sets = 100
+train_sets = 20
 test_iterations = 1000
 
 # Parameters to be used, if applicable for given model(s)
@@ -48,6 +49,7 @@ exp_val = -.75
 
 statistics = True
 train_visualizations = True
+test_visualizations = True
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 Run program
@@ -170,7 +172,7 @@ directory = 'general'
 parent_dir = '/Users/philcrawford/PycharmProjects/JuneRL2022/results/'
 path = os.path.join(parent_dir, directory)
 
-writer = pd.ExcelWriter(path + '/' + 'tmatrix_' + seq_preview + '_' + date_string + '.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter(path + '/' + 'tmatrix_' + date_string + '_' + seq_preview + '.xlsx', engine='xlsxwriter')
 df_prob.to_excel(writer, sheet_name='prob_matrix')
 df_transition.to_excel(writer, sheet_name='trans_matrix')
 writer.save()
@@ -564,6 +566,147 @@ for model in model_list:
     df_prob.to_excel(writer, sheet_name='prob_matrix')
     df_transition.to_excel(writer, sheet_name='trans_matrix')
     writer.save()
+
+    board_rows = 5
+    board_cols = 5
+
+    int_A_test = {}
+    int_B_test = {}
+    int_C_test = {}
+    int_D_test = {}
+    for i in range(board_rows):
+        for j in range(board_cols):
+            int_A_test[(i, j)] = {}
+            int_B_test[(i, j)] = {}
+            int_C_test[(i, j)] = {}
+            int_D_test[(i, j)] = {}
+
+    for i in range(-1, 2):
+        for j in range (-1, 2):
+            int_A_test[0, 0][(i, j)] = round(AA_prob, 3)
+            int_A_test[0, 1][(i, j)] = round(AA_prob, 3)
+            int_A_test[0, 2][(i, j)] = round(Aup_prob, 3)
+            int_A_test[0, 3][(i, j)] = round(AB_prob, 3)
+            int_A_test[0, 4][(i, j)] = round(AB_prob, 3)
+
+            int_A_test[1, 0][(i, j)] = round(AA_prob, 3)
+            int_A_test[1, 1][(i, j)] = round(AA_prob, 3)
+            int_A_test[1, 2][(i, j)] = round(Aup_prob, 3)
+            int_A_test[1, 3][(i, j)] = round(AB_prob, 3)
+            int_A_test[1, 4][(i, j)] = round(AB_prob, 3)
+
+            int_A_test[2, 0][(i, j)] = round(Aleft_prob, 3)
+            int_A_test[2, 1][(i, j)] = round(Aleft_prob, 3)
+            int_A_test[2, 2][(i, j)] = round(Amid_prob, 3)
+            int_A_test[2, 3][(i, j)] = round(Aright_prob, 3)
+            int_A_test[2, 4][(i, j)] = round(Aright_prob, 3)
+
+            int_A_test[3, 0][(i, j)] = round(AC_prob, 3)
+            int_A_test[3, 1][(i, j)] = round(AC_prob, 3)
+            int_A_test[3, 2][(i, j)] = round(Adown_prob, 3)
+            int_A_test[3, 3][(i, j)] = round(AD_prob, 3)
+            int_A_test[3, 4][(i, j)] = round(AD_prob, 3)
+
+            int_A_test[4, 0][(i, j)] = round(AC_prob, 3)
+            int_A_test[4, 1][(i, j)] = round(AC_prob, 3)
+            int_A_test[4, 2][(i, j)] = round(Adown_prob, 3)
+            int_A_test[4, 3][(i, j)] = round(AD_prob, 3)
+            int_A_test[4, 4][(i, j)] = round(AD_prob, 3)
+
+            int_B_test[0, 0][(i, j)] = round(BA_prob, 3)
+            int_B_test[0, 1][(i, j)] = round(BA_prob, 3)
+            int_B_test[0, 2][(i, j)] = round(Bup_prob, 3)
+            int_B_test[0, 3][(i, j)] = round(BB_prob, 3)
+            int_B_test[0, 4][(i, j)] = round(BB_prob, 3)
+
+            int_B_test[1, 0][(i, j)] = round(BA_prob, 3)
+            int_B_test[1, 1][(i, j)] = round(BA_prob, 3)
+            int_B_test[1, 2][(i, j)] = round(Bup_prob, 3)
+            int_B_test[1, 3][(i, j)] = round(BB_prob, 3)
+            int_B_test[1, 4][(i, j)] = round(BB_prob, 3)
+
+            int_B_test[2, 0][(i, j)] = round(Bleft_prob, 3)
+            int_B_test[2, 1][(i, j)] = round(Bleft_prob, 3)
+            int_B_test[2, 2][(i, j)] = round(Bmid_prob, 3)
+            int_B_test[2, 3][(i, j)] = round(Bright_prob, 3)
+            int_B_test[2, 4][(i, j)] = round(Bright_prob, 3)
+
+            int_B_test[3, 0][(i, j)] = round(BC_prob, 3)
+            int_B_test[3, 1][(i, j)] = round(BC_prob, 3)
+            int_B_test[3, 2][(i, j)] = round(Bdown_prob, 3)
+            int_B_test[3, 3][(i, j)] = round(BD_prob, 3)
+            int_B_test[3, 4][(i, j)] = round(BD_prob, 3)
+
+            int_B_test[4, 0][(i, j)] = round(BC_prob, 3)
+            int_B_test[4, 1][(i, j)] = round(BC_prob, 3)
+            int_B_test[4, 2][(i, j)] = round(Bdown_prob, 3)
+            int_B_test[4, 3][(i, j)] = round(BD_prob, 3)
+            int_B_test[4, 4][(i, j)] = round(BD_prob, 3)
+
+            int_C_test[0, 0][(i, j)] = round(CA_prob, 3)
+            int_C_test[0, 1][(i, j)] = round(CA_prob, 3)
+            int_C_test[0, 2][(i, j)] = round(Cup_prob, 3)
+            int_C_test[0, 3][(i, j)] = round(CB_prob, 3)
+            int_C_test[0, 4][(i, j)] = round(CB_prob, 3)
+
+            int_C_test[1, 0][(i, j)] = round(CA_prob, 3)
+            int_C_test[1, 1][(i, j)] = round(CA_prob, 3)
+            int_C_test[1, 2][(i, j)] = round(Cup_prob, 3)
+            int_C_test[1, 3][(i, j)] = round(CB_prob, 3)
+            int_C_test[1, 4][(i, j)] = round(CB_prob, 3)
+
+            int_C_test[2, 0][(i, j)] = round(Cleft_prob, 3)
+            int_C_test[2, 1][(i, j)] = round(Cleft_prob, 3)
+            int_C_test[2, 2][(i, j)] = round(Cmid_prob, 3)
+            int_C_test[2, 3][(i, j)] = round(Cright_prob, 3)
+            int_C_test[2, 4][(i, j)] = round(Cright_prob, 3)
+
+            int_C_test[3, 0][(i, j)] = round(CC_prob, 3)
+            int_C_test[3, 1][(i, j)] = round(CC_prob, 3)
+            int_C_test[3, 2][(i, j)] = round(Cdown_prob, 3)
+            int_C_test[3, 3][(i, j)] = round(CD_prob, 3)
+            int_C_test[3, 4][(i, j)] = round(CD_prob, 3)
+
+            int_C_test[4, 0][(i, j)] = round(CC_prob, 3)
+            int_C_test[4, 1][(i, j)] = round(CC_prob, 3)
+            int_C_test[4, 2][(i, j)] = round(Cdown_prob, 3)
+            int_C_test[4, 3][(i, j)] = round(CD_prob, 3)
+            int_C_test[4, 4][(i, j)] = round(CD_prob, 3)
+
+            int_D_test[0, 0][(i, j)] = round(DA_prob, 3)
+            int_D_test[0, 1][(i, j)] = round(DA_prob, 3)
+            int_D_test[0, 2][(i, j)] = round(Dup_prob, 3)
+            int_D_test[0, 3][(i, j)] = round(DB_prob, 3)
+            int_D_test[0, 4][(i, j)] = round(DB_prob, 3)
+
+            int_D_test[1, 0][(i, j)] = round(DA_prob, 3)
+            int_D_test[1, 1][(i, j)] = round(DA_prob, 3)
+            int_D_test[1, 2][(i, j)] = round(Dup_prob, 3)
+            int_D_test[1, 3][(i, j)] = round(DB_prob, 3)
+            int_D_test[1, 4][(i, j)] = round(DB_prob, 3)
+
+            int_D_test[2, 0][(i, j)] = round(Dleft_prob, 3)
+            int_D_test[2, 1][(i, j)] = round(Dleft_prob, 3)
+            int_D_test[2, 2][(i, j)] = round(Dmid_prob, 3)
+            int_D_test[2, 3][(i, j)] = round(Dright_prob, 3)
+            int_D_test[2, 4][(i, j)] = round(Dright_prob, 3)
+
+            int_D_test[3, 0][(i, j)] = round(DC_prob, 3)
+            int_D_test[3, 1][(i, j)] = round(DC_prob, 3)
+            int_D_test[3, 2][(i, j)] = round(Ddown_prob, 3)
+            int_D_test[3, 3][(i, j)] = round(DD_prob, 3)
+            int_D_test[3, 4][(i, j)] = round(DD_prob, 3)
+
+            int_D_test[4, 0][(i, j)] = round(DC_prob, 3)
+            int_D_test[4, 1][(i, j)] = round(DC_prob, 3)
+            int_D_test[4, 2][(i, j)] = round(Ddown_prob, 3)
+            int_D_test[4, 3][(i, j)] = round(DD_prob, 3)
+            int_D_test[4, 4][(i, j)] = round(DD_prob, 3)
+
+    metatestdic = {'Aint': int_A_test, 'Bint': int_B_test, 'Dint': int_D_test, 'Cint': int_C_test}
+    if test_visualizations:
+        visualize_testtables(model, metatestdic)
+
 
 """""""""
 Statistics/visualization to add:
