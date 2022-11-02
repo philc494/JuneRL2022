@@ -9,6 +9,10 @@
       <excludeFolder url="file://$MODULE_DIR$/results/train/3" />
       <excludeFolder url="file://$MODULE_DIR$/results/train/4" />
       <excludeFolder url="file://$MODULE_DIR$/results/test/4" />
+      <excludeFolder url="file://$MODULE_DIR$/results/test/1" />
+      <excludeFolder url="file://$MODULE_DIR$/results/test/2" />
+      <excludeFolder url="file://$MODULE_DIR$/results/train/1" />
+      <excludeFolder url="file://$MODULE_DIR$/results/train/2" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
