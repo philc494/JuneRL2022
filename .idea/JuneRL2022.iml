@@ -3,6 +3,12 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/results/test/0" />
+      <excludeFolder url="file://$MODULE_DIR$/results/test/3" />
+      <excludeFolder url="file://$MODULE_DIR$/results/train/0" />
+      <excludeFolder url="file://$MODULE_DIR$/results/train/3" />
+      <excludeFolder url="file://$MODULE_DIR$/results/train/4" />
+      <excludeFolder url="file://$MODULE_DIR$/results/test/4" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
