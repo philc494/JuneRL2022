@@ -42,7 +42,7 @@ Select training criteria, models, and desired reports
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # Models to analyze
 model_list = [2]
-seq_list = [seq1]
+seq_list = [seq1, seq3, seq7, cust1, cust2, cust3, cust4, cust5, cust6]
 # seq_list = [seq1, seq3]
 
 seq_labels = {seq1: 'seq1', seq3: 'seq3', seq4: 'seq4', seq7: 'seq7', cust1: 'cust1', cust2: 'cust2', cust3: 'cust3', cust4: 'cust4',
@@ -77,7 +77,7 @@ for seq in seq_list:
             train_visualizations = True
             test_visualizations = True
 
-            label = seq_labels[seq] + '_' + alpha_labels[alpha] + '_' + exp_labels[exp_val] + '_' \
+            label = 'test_' + seq_labels[seq] + '_' + alpha_labels[alpha] + '_' + exp_labels[exp_val] + '_' \
                     + exploration_label
 
             """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
