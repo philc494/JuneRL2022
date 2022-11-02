@@ -1,6 +1,5 @@
 import numpy as np
 import random
-import collections.abc
 
 AA_trans = 0
 AB_trans = 0
@@ -49,6 +48,47 @@ def test_model(testdic, testseq, model, parameters):
         Bleft_trans, Bright_trans, CA_trans, CB_trans, CC_trans, CD_trans, Cmid_trans, Cup_trans, \
         Cdown_trans, Cleft_trans, Cright_trans, DA_trans, DB_trans, DC_trans, DD_trans, Dmid_trans, \
         Dup_trans, Ddown_trans, Dleft_trans, Dright_trans
+
+    AA_trans = 0
+    AB_trans = 0
+    AC_trans = 0
+    AD_trans = 0
+    Amid_trans = 0
+    Aup_trans = 0
+    Adown_trans = 0
+    Aleft_trans = 0
+    Aright_trans = 0
+
+    BA_trans = 0
+    BB_trans = 0
+    BC_trans = 0
+    BD_trans = 0
+    Bmid_trans = 0
+    Bup_trans = 0
+    Bdown_trans = 0
+    Bleft_trans = 0
+    Bright_trans = 0
+
+    CA_trans = 0
+    CB_trans = 0
+    CC_trans = 0
+    CD_trans = 0
+    Cmid_trans = 0
+    Cup_trans = 0
+    Cdown_trans = 0
+    Cleft_trans = 0
+    Cright_trans = 0
+
+    DA_trans = 0
+    DB_trans = 0
+    DC_trans = 0
+    DD_trans = 0
+    Dmid_trans = 0
+    Dup_trans = 0
+    Ddown_trans = 0
+    Dleft_trans = 0
+    Dright_trans = 0
+
     exp_rate = parameters['exp_rate']
     int_move_counter = 0
     act_move_counter = 0
@@ -121,7 +161,7 @@ def test_model(testdic, testseq, model, parameters):
         return False
 
     def pick_int_move(prev_target):
-        if model == 2:
+        if model == 2 or model == 4:
             next_int_action = ""
             while True:
                 random.shuffle(int_actions)
@@ -158,7 +198,7 @@ def test_model(testdic, testseq, model, parameters):
                     continue
                 else:
                     return next_int_action
-        elif model == 1:
+        elif model == 1 or model == 3:
             while True:
                 int_rewards = []
                 if prev_target == "A":
@@ -240,7 +280,7 @@ def test_model(testdic, testseq, model, parameters):
                     return next_int_action
 
     def pick_act_move(win_target):
-        if model == 2:
+        if model == 2 or model == 4:
             next_act_action = ""
             while True:
                 random.shuffle(act_actions)
@@ -277,7 +317,7 @@ def test_model(testdic, testseq, model, parameters):
                     continue
                 else:
                     return next_act_action
-        if model == 1:
+        if model == 1 or model == 3:
             while True:
                 act_rewards = []
                 if win_target == "A":

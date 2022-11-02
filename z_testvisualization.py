@@ -13,7 +13,7 @@ def minisquare_values(reward_dic, board_pos):
     return mini_dic
 
 
-def visualize_testtables(model, resultsdic):
+def visualize_testtables(model, resultsdic, label):
     reward_info_out = {"intA": [resultsdic["Aint"], "AAint_rewards", "AAint"],
                        "intB": [resultsdic["Bint"], "BBint_rewards", "BBint"],
                        "intC": [resultsdic["Cint"], "CCint_rewards", "CCint"],
@@ -445,105 +445,107 @@ def visualize_testtables(model, resultsdic):
         # cbar.set_ticks([])
 
         ax = plt.subplot(5, 5, 1)
-        sns.heatmap(pivot00, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot00, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 2)
-        sns.heatmap(pivot01, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot01, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 3)
-        sns.heatmap(pivot02, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot02, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 4)
-        sns.heatmap(pivot03, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot03, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 5)
-        sns.heatmap(pivot04, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot04, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 6)
-        sns.heatmap(pivot10, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot10, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 7)
-        sns.heatmap(pivot11, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot11, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 8)
-        sns.heatmap(pivot12, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot12, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 9)
-        sns.heatmap(pivot13, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot13, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 10)
-        sns.heatmap(pivot14, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot14, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 11)
-        sns.heatmap(pivot20, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot20, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 12)
-        sns.heatmap(pivot21, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot21, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 13)
-        sns.heatmap(pivot22, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot22, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 14)
-        sns.heatmap(pivot23, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot23, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 15)
-        sns.heatmap(pivot24, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot24, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 16)
-        sns.heatmap(pivot30, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot30, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 17)
-        sns.heatmap(pivot31, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot31, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 18)
-        sns.heatmap(pivot32, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot32, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 19)
-        sns.heatmap(pivot33, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot33, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 20)
-        sns.heatmap(pivot34, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot34, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 21)
-        sns.heatmap(pivot40, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot40, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 22)
-        sns.heatmap(pivot41, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot41, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 23)
-        sns.heatmap(pivot42, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot42, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 24)
-        sns.heatmap(pivot43, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot43, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         ax = plt.subplot(5, 5, 25)
-        sns.heatmap(pivot44, annot=True, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
+        sns.heatmap(pivot44, annot=False, fmt="g", vmin=0, vmax=1, cmap='vlag',  cbar=False, ax=ax)
         ax.set_aspect('equal')
 
         fig.tight_layout(rect=[0, 0, .9, 1])
-        fig.savefig(path + '/' + str(model) + '_' + reward_info_out[a][2] + "_testprob.png")
+        fig.savefig(path + '/' + str(model) + '_' + label + '_' +  reward_info_out[a][2] + "_testprob.jpg")
         plt.close()
+
+    print("Model {} testing visualization: complete".format(model))

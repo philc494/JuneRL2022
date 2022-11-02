@@ -13,17 +13,21 @@ def minisquare_values(reward_dic, board_pos):
     return mini_dic
 
 
-def visualize_tables(model, resultsdic):
-    reward_info_out = {"scenA": [resultsdic["A"], "AA_rewards", "AA"],
-                       "scenB": [resultsdic["B"], "BB_rewards", "BB"],
-                       "scenC": [resultsdic["C"], "CC_rewards", "CC"],
-                       "scenD": [resultsdic["D"], "DD_rewards", "DD"],
-                       "intA": [resultsdic["Aint"], "AAint_rewards", "AAint"],
+def visualize_tables(model, resultsdic, label):
+    # reward_info_out = {"scenA": [resultsdic["A"], "AA_rewards", "AA"],
+    #                    "scenB": [resultsdic["B"], "BB_rewards", "BB"],
+    #                    "scenC": [resultsdic["C"], "CC_rewards", "CC"],
+    #                    "scenD": [resultsdic["D"], "DD_rewards", "DD"],
+    #                    "intA": [resultsdic["Aint"], "AAint_rewards", "AAint"],
+    #                    "intB": [resultsdic["Bint"], "BBint_rewards", "BBint"],
+    #                    "intC": [resultsdic["Cint"], "CCint_rewards", "CCint"],
+    #                    "intD": [resultsdic["Dint"], "DDint_rewards", "DDint"]}
+
+    reward_info_out = {"intA": [resultsdic["Aint"], "AAint_rewards", "AAint"],
                        "intB": [resultsdic["Bint"], "BBint_rewards", "BBint"],
                        "intC": [resultsdic["Cint"], "CCint_rewards", "CCint"],
                        "intD": [resultsdic["Dint"], "DDint_rewards", "DDint"]}
 
-    print(resultsdic)
     for a in reward_info_out:
         dic_value_list = []
         for b in reward_info_out[a][0]:
@@ -527,5 +531,6 @@ def visualize_tables(model, resultsdic):
         ax.set_aspect('equal')
 
         fig.tight_layout(rect=[0, 0, .9, 1])
-        fig.savefig(path + '/' + str(model) + '_' + reward_info_out[a][2] + "_fullgrid.png")
+        fig.savefig(path + '/' + str(model) + '_' + label + '_' + reward_info_out[a][2] + "_fullgrid.jpg")
         plt.close()
+    print("Model {} training visualizations complete".format(model))

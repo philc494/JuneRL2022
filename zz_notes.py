@@ -1,4 +1,25 @@
+
+
 """
+Sep13:
+- paper:
+  - structure as systematic problems/benefits of models
+  - limitation of tmatrix average vs. getting it right at the right time 
+
+
+- todo:
+   - compare model to transition matrix (no numbers, "top right red square in both")
+
+    Statistics/visualization to add:
+    - making a summary excel to compare models
+    other stats:
+    - variance of Q values across sets
+    - % of time int state leads directly to target
+
+
+
+
+
 Aug26:
 Done:
     - change Main to include assigning parameters across all models to be used in train and test 
@@ -16,7 +37,10 @@ Done:
 - make visualization - train and visualization - test (so one can turn off separately)
 
 todo:
-    - make label function
+    - fix sigkill
+    - make test stats output (dataframe) capable of handling 100k test iterations of 48 games each
+    - make "ideal" transition matrix visualization for each int state, then make a difference visualization
+    - make ability to type in multiple parameters and models will both run with all these parameters??
         
 
 
