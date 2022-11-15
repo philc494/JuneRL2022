@@ -42,24 +42,23 @@ Select training criteria, models, and desired reports
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # Models to analyze
 model_list = [2]
-seq_list = [seq1, seq3, seq7, cust1, cust2, cust3, cust4, cust5, cust6]
-# seq_list = [seq1, seq3]
+seq_list = [seq1]
 
 seq_labels = {seq1: 'seq1', seq3: 'seq3', seq4: 'seq4', seq7: 'seq7', cust1: 'cust1', cust2: 'cust2', cust3: 'cust3', cust4: 'cust4',
           cust5: 'cust5', cust6: 'cust6', seq10: 'seq10'}
 
 # Parameters to be used, if applicable for given model(s)
-# alpha_list = [.05, .25, .50]
-alpha_list = [.25]
+alpha_list = [.05, .25, .50]
+
 alpha_labels = {.05: '05', .25: '25', .5: '50'}
 
-explore_list = [.05, .25, .50]
-explore_labels = {.05: '05', .25: '25', .5: '50'}
+# explore_list = [.05, .25, .50]
+# explore_labels = {.05: '05', .25: '25', .5: '50'}
 exploration_rate = 0.2
 exploration_label = '20'
 
-# exp_list = [-.25, -.75, -1.25]
-exp_list = [-.75]
+exp_list = [-.25, -.75, -1.25]
+
 exp_labels = {-.25: '25', -.75: '75', -1.25: '125'}
 
 for seq in seq_list:
@@ -72,12 +71,12 @@ for seq in seq_list:
             train_sets = 50
             test_iterations = 100000
 
-            make_general_matrix = False
+            make_general_matrix = True
             statistics = True
             train_visualizations = True
             test_visualizations = True
 
-            label = 'test_' + seq_labels[seq] + '_' + alpha_labels[alpha] + '_' + exp_labels[exp_val] + '_' \
+            label = 'eps20_' + seq_labels[seq] + '_' + alpha_labels[alpha] + '_' + exp_labels[exp_val] + '_' \
                     + exploration_label
 
             """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
