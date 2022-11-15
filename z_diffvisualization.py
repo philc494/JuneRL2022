@@ -429,7 +429,7 @@ def visualize_testtables(model, resultsdic, label):
         pivot44 = df44.pivot(index='X-direction', columns='Y-direction', values='value')
 
         directory = str(model)
-        parent_dir = '/Users/philcrawford/PycharmProjects/JuneRL2022/results/test'
+        parent_dir = '/Users/philcrawford/PycharmProjects/JuneRL2022/results/general/diffmatrices/results/'
         path = os.path.join(parent_dir, directory)
         if not path:
             os.mkdir(path)

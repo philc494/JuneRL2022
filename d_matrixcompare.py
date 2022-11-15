@@ -20,7 +20,6 @@ for file in os.listdir(path):
         test_matrix_list.append(file)
 
 for file in test_matrix_list:
-    print(file)
     matrix = path + file
     testmatrix = pd.read_excel(matrix, index_col=0)
     file_prefix = file[0:12]
@@ -29,6 +28,28 @@ for file in test_matrix_list:
     actualmatrix = pd.read_excel(actual_mat, index_col=0)
     result = testmatrix - actualmatrix
     result.at['A', 'Down'] = testmatrix.at['A', 'Down']
+    result.at['A', 'Left'] = testmatrix.at['A', 'Left']
+    result.at['A', 'Mid'] = testmatrix.at['A', 'Mid']
+    result.at['A', 'Right'] = testmatrix.at['A', 'Right']
+    result.at['A', 'Up'] = testmatrix.at['A', 'Up']
+
+    result.at['B', 'Down'] = testmatrix.at['B', 'Down']
+    result.at['B', 'Left'] = testmatrix.at['B', 'Left']
+    result.at['B', 'Mid'] = testmatrix.at['B', 'Mid']
+    result.at['B', 'Right'] = testmatrix.at['B', 'Right']
+    result.at['B', 'Up'] = testmatrix.at['B', 'Up']
+
+    result.at['C', 'Down'] = testmatrix.at['C', 'Down']
+    result.at['C', 'Left'] = testmatrix.at['C', 'Left']
+    result.at['C', 'Mid'] = testmatrix.at['C', 'Mid']
+    result.at['C', 'Right'] = testmatrix.at['C', 'Right']
+    result.at['C', 'Up'] = testmatrix.at['C', 'Up']
+
+    result.at['D', 'Down'] = testmatrix.at['D', 'Down']
+    result.at['D', 'Left'] = testmatrix.at['D', 'Left']
+    result.at['D', 'Mid'] = testmatrix.at['D', 'Mid']
+    result.at['D', 'Right'] = testmatrix.at['D', 'Right']
+    result.at['D', 'Up'] = testmatrix.at['D', 'Up']
 
     writer = pd.ExcelWriter(savepath + 'diff_' + file + 'tmatrixdiff.xlsx')
     result.to_excel(writer, sheet_name='summary')
